@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Ajax
+Route::group(['namespace' => 'Ajax'], function() {
 });
+
+// Home
+Route::get('/', 'HomeController@index')->name('home');

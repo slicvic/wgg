@@ -1,0 +1,21 @@
+{
+  "name": "wgg",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "https://github.com/slicvic/wgg",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+      "bootstrap": "^3.3.7",
+      "bootstrap-datepicker": "bootstrap-3-datepicker#^1.6.4",
+      "typeahead.js": "^0.11.1",
+      "font-awesome": "fontawesome#^4.6.3",
+      "vue": "^2.0.3"
+  }
+}
