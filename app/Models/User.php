@@ -10,9 +10,7 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * @inheritdoc
      */
     protected $fillable = [
         'social_account_id',
@@ -25,7 +23,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the SocialAccountType record associated with the user.
+     * Get the social account type record associated with the user.
      *
      * @return \App\Models\SocialAccountType
      */

@@ -28,6 +28,6 @@ class CreateEventStatusesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('event_statuses');
     }
 }

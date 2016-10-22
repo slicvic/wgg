@@ -11,6 +11,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        DB::table('social_account_types')->insert([
+            ['name' => 'facebook', 'title' => 'Facebook']
+        ]);
+
+        DB::table('event_types')->insert([
+            ['name' => 'soccer', 'title' => 'Soccer']
+        ]);
+
+        DB::table('event_statuses')->insert([
+            ['name' => 'active', 'title' => 'Active'],
+            ['name' => 'canceled', 'title' => 'Canceled']
+        ]);
     }
 }

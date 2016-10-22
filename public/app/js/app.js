@@ -71,7 +71,7 @@ var MyApp = (function($, logger, globalSettings) {
             settings.google.maps.services.places.getDetails({
                 placeId: datum.place_id
             }, function(place, status) {
-                logger.info('PlacesService', place.geometry.location.lat(), place.geometry.location.lng());
+                logger.info('PlacesService', place);
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     if ($this.data('bind-field-lat')) {
                         $($this.data('bind-field-lat')).val(place.geometry.location.lat());

@@ -16,7 +16,7 @@ class CreateEventTypesTable extends Migration
         Schema::create('event_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
-            $table->string('title', 100);
+            $table->string('display_name', 100);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateEventTypesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('event_types');
     }
 }

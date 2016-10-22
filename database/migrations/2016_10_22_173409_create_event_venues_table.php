@@ -15,8 +15,8 @@ class CreateEventVenuesTable extends Migration
     {
         Schema::create('event_venues', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title', 255);
-            $table->string('address', 255);
+            $table->string('name', 255)->default('');
+            $table->string('address', 255)->default('');
             $table->timestamps();
         });
 
@@ -30,6 +30,6 @@ class CreateEventVenuesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('event_venues');
     }
 }

@@ -15,11 +15,11 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('type_id');
-            $table->unsignedInteger('status_id');
-            $table->unsignedInteger('venue_id');
-            $table->string('title', 255);
+            $table->unsignedInteger('user_id')->nullable();
+            $table->unsignedInteger('type_id')->nullable();
+            $table->unsignedInteger('status_id')->nullable();
+            $table->unsignedInteger('venue_id')->nullable();
+            $table->string('title', 100);
             $table->string('description', 255);
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
@@ -39,6 +39,6 @@ class CreateEventsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('events');
     }
 }
