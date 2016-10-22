@@ -33,7 +33,7 @@ class User extends Authenticatable
     }
 
    /**
-    * Overrides the method to ignore the remember token.
+    * Override the method to ignore the remember token.
     */
     public function setAttribute($key, $value)
     {
@@ -43,4 +43,19 @@ class User extends Authenticatable
             parent::setAttribute($key, $value);
         }
     }
+
+    /**
+     * Find a user with the given social account id and social account type id.
+     *
+     * @param  string $socialAccountId
+     * @param  int $socialAccountTypeId
+     * @return User|null
+     */
+    public static function findBySocialAccountIdAndSocialAccountTypeId($socialAccountId, $socialAccountTypeId)
+    {
+        return User::where('social_account_id', $socialAccountId)
+                    ->where('social_account_type_id', $socialAccountTypeId)
+                    ->first();
+    }
+
 }

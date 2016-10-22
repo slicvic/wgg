@@ -8,20 +8,29 @@ use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 
-use App\Http\Controllers\BaseController;
+use App\Http\Controllers\BaseLoginController;
 use App\Models\User;
 use App\Models\SocialAccountType;
+use App\Exceptions\AccountDeactivatedException;
 
-class LoginController extends BaseController
+class LoginController extends BaseLoginController
 {
+    /**
+     * Logs in a facebook user.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Routing\Redirector
+     */
     public function login(Request $request)
     {
+        // Load up the facebook service
         $fb = new Facebook([
             'app_id' => env('FACEBOOK_APP_ID'),
             'app_secret' => env('FACEBOOK_APP_SECRET'),
             'default_graph_version' => env('FACEBOOK_DEFAULT_GRAPH_VERSION')
         ]);
 
+        // Get javascript helper
         $jsHelper = $fb->getJavaScriptHelper();
 
         try {
@@ -30,64 +39,48 @@ class LoginController extends BaseController
 
             // Throw error if no access token
             if (!$accessToken) {
-                throw new FacebookSDKException('The Facebook access token is invalid.');
+                throw new FacebookSDKException('The access token is invalid.');
             }
 
-            // Request profile info
+            // Request user profile info
             $response = $fb->get('/me', $accessToken);
 
-            // Throw error if no profile info
+            // Throw error if no user profile info
             if ($response->getHttpStatusCode() != 200) {
-                throw new FacebookSDKException('We could not retrieve your Facebook profile info.');
+                throw new FacebookSDKException('We could not retrieve your profile info.');
             }
 
-            // Extract profile info
+            // Extract user profile info
             $facebookUser = $response->getGraphUser();
 
-            // Check if user exists
-            $user = User::where('social_account_id', $facebookUser['id'])
-                        ->where('social_account_type_id', SocialAccountType::FACEBOOK)
-                        ->first();
+            // Check if user exists on our end
+            $user = User::findBySocialAccountIdAndSocialAccountTypeId($facebookUser['id'], SocialAccountType::FACEBOOK);
 
-            if ($user) {
-                // Update user record or throw error if deactivated
-                if ($user->active) {
-                    $user->update([
-                        'name' => $facebookUser['name'],
-                        'email' => (isset($facebookUser['email'])) ? $facebookUser['email'] : '',
-                        'location_name' => (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '',
-                        'loggedin_at' => date('Y-m-d H:i:s')
-                    ]);
-                } else {
-                    throw new FacebookSDKException(sprintf('Your %s account has been deactivated.', env('APP_NAME')));
-                }
-            } else {
-                // Create new user record
-                $user = User::create([
-                    'social_account_id' => $facebookUser['id'],
-                    'social_account_type_id' => SocialAccountType::FACEBOOK,
-                    'name' => $facebookUser['name'],
-                    'email' => (isset($facebookUser['email'])) ? $facebookUser['email'] : '',
-                    'location_name' => (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '',
-                    'loggedin_at' => date('Y-m-d H:i:s'),
-                    'active' => 1
-                ]);
+            // Throw error if account deactivated
+            if ($user && !$user->active) {
+                throw new AccountDeactivatedException();
             }
+
+            // Create/update user record
+            $user = ($user) ?: new User;
+            $user->social_account_id = $facebookUser['id'];
+            $user->social_account_type_id = SocialAccountType::FACEBOOK;
+            $user->name = $facebookUser['name'];
+            $user->email = (isset($facebookUser['email'])) ? $facebookUser['email'] : '';
+            $user->location_name = (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '';
+            $user->loggedin_at = date('Y-m-d H:i:s');
+            $user->active = 1;
+            $user->save();
 
             // Log in user
             Auth::loginUsingId($user->id);
         } catch(FacebookResponseException $e) {
-            $this->flashError($e->getMessage());
+            $this->flashError('Facebook login error: ' . $e->getMessage());
         } catch(FacebookSDKException $e) {
+            $this->flashError('Facebook login error: ' . $e->getMessage());
+        } catch(AccountDeactivatedException $e) {
             $this->flashError($e->getMessage());
         }
-
-        return redirect()->route('home');
-    }
-
-    public function logout()
-    {
-        Auth::logout();
 
         return redirect()->route('home');
     }
