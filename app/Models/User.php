@@ -53,9 +53,28 @@ class User extends Authenticatable
      */
     public static function findBySocialAccountIdAndSocialAccountTypeId($socialAccountId, $socialAccountTypeId)
     {
-        return User::where('social_account_id', $socialAccountId)
+        return static::where('social_account_id', $socialAccountId)
                     ->where('social_account_type_id', $socialAccountTypeId)
                     ->first();
     }
 
+    /**
+     * Create or update a facebook user.
+     *
+     * @param  array $attributes
+     * @param  User $user
+     * @return User
+     */
+    public static function createOrUpdateFacebookUser(array $attributes = [], User $user = null)
+    {
+        $attributes['social_account_type_id'] = SocialAccountType::FACEBOOK;
+
+        if (!$user) {
+            $user = new static;
+        }
+
+        $user->fill($attributes)->save();
+
+        return $user;
+    }
 }

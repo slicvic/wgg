@@ -56,21 +56,20 @@ class LoginController extends BaseLoginController
             // Check if user exists on our end
             $user = User::findBySocialAccountIdAndSocialAccountTypeId($facebookUser['id'], SocialAccountType::FACEBOOK);
 
-            // Throw error if account deactivated
+            // Throw error if account is deactivated
             if ($user && !$user->active) {
-                throw new AccountDeactivatedException();
+                throw new AccountDeactivatedException;
             }
 
             // Create/update user record
-            $user = ($user) ?: new User;
-            $user->social_account_id = $facebookUser['id'];
-            $user->social_account_type_id = SocialAccountType::FACEBOOK;
-            $user->name = $facebookUser['name'];
-            $user->email = (isset($facebookUser['email'])) ? $facebookUser['email'] : '';
-            $user->location_name = (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '';
-            $user->loggedin_at = date('Y-m-d H:i:s');
-            $user->active = 1;
-            $user->save();
+            $user = User::createOrUpdateFacebookUser([
+                'social_account_id' => $facebookUser['id'],
+                'name' => $facebookUser['name'],
+                'email' => (isset($facebookUser['email'])) ? $facebookUser['email'] : '',
+                'location_name' => (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '',
+                'loggedin_at' => date('Y-m-d H:i:s'),
+                'active' => 1
+            ], $user);
 
             // Log in user
             Auth::loginUsingId($user->id);
