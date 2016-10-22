@@ -6,16 +6,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <meta name="facebook-app-id" content="{{ env('FACEBOOK_APP_ID') }}">
-        <meta name="google-maps-api-key" content="{{ env('GOOGLE_MAPS_API_KEY') }}">
         <link rel="icon" href="">
         <title>Who's Got Game?!</title>
         @section('stylesheets')
             <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
             <link href="/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
             <link href="/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-            <link href="/app/src/css/typeaheadjs.css" rel="stylesheet">
-            <link href="/app/src/css/app.css" rel="stylesheet">
+            <link href="/app/css/typeaheadjs.css" rel="stylesheet">
+            <link href="/app/css/app.css" rel="stylesheet">
         @show
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -45,6 +43,7 @@
             </nav>
         @show
         <div class="container">
+            @include('flash-message')
             @yield('content')
         </div>
 
@@ -54,20 +53,32 @@
         <script src="/bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
         <script src="/bower_components/vue/dist/vue.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
-        <script src="/app/src/js/logger.js"></script>
-        <script>
-            (function(d, s, id){
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) {return;}
-                js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
+        <script src="/app/js/logger.js"></script>
+        <script type="text/javascript">
+            var globalSettings = {
+                application: {
+                    routes: {
+                        login: '{{ route('login') }}'
+                    },
+                    facebook: {
+                        appId: {{ env('FACEBOOK_APP_ID') }}
+                    },
+                    google: {
+                        maps: {
+                            apiKey: '{{ env('GOOGLE_MAPS_API_KEY') }}',
+                            services: {
+                                autocomplete: new google.maps.places.AutocompleteService(),
+                                places: new google.maps.places.PlacesService(document.createElement('span')),
+                            }
+                        }
+                    }
+                }
+            };
         </script>
         @section('javascripts')
         @show
-        <script src="/app/src/js/app.js"></script>
-        <script src="/app/src/js/services/facebook.js"></script>
-        <script src="/app/src/js/index.js"></script>
+        <script src="/app/js/app.js"></script>
+        <script src="/app/js/services/facebook.js"></script>
+        <script src="/app/js/index.js"></script>
     </body>
 </html>

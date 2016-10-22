@@ -1,3 +1,4 @@
+'use strict';
 var Logger = (function() {
     function info() {
         log(arguments, 'info');
@@ -22,4 +23,4 @@ var Logger = (function() {
         info: info,
         error: error
     }
-}());
+})();

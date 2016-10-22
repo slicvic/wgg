@@ -12,6 +12,11 @@
     <div id="sss"></div>
 
 </form>
-<fb:login-button scope="public_profile,email" onlogin="app.services.facebook.checkLoginState();">
-</fb:login-button>
+@if (Auth::check())
+Logged in
+<a href="/logout">Logout</a>
+@else
+<a href="#" onclick="MyApp.services.facebook.login();">Login</a>
+@endif
+
 @endsection

@@ -1,17 +1,9 @@
-var app = (function($, logger) {
-    var settings = {
-        facebook: {
-            appId: $('meta[name="facebook-app-id"]').attr('content')
-        },
-        google: {
-            maps: {
-                apiKey: $('meta[name="google-maps-api-key"]').attr('content'),
-                services: {
-                    autocomplete: new google.maps.places.AutocompleteService(),
-                    places: new google.maps.places.PlacesService(document.createElement('span')),
-                }
-            }
-        }
+'use strict';
+var MyApp = (function($, logger, globalSettings) {
+    var settings = globalSettings.application;
+
+    var user = {
+        isLoggedIn: false
     };
 
     var elements = {
@@ -26,11 +18,6 @@ var app = (function($, logger) {
     function init() {
         bindDatepickers();
         bindTypeaheads();
-        initServices();
-    }
-
-    function initServices() {
-        app.services.facebook.init();
     }
 
     function bindDatepickers() {
@@ -99,6 +86,7 @@ var app = (function($, logger) {
 
     return {
         settings: settings,
+        user: user,
         init: init
     }
-}($, Logger));
+}(jQuery, Logger, globalSettings));

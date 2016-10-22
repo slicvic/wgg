@@ -13,7 +13,15 @@
 
 // Ajax
 Route::group(['namespace' => 'Ajax'], function() {
+
 });
+
+// Facebook
+Route::group(['namespace' => 'Facebook'], function() {
+    Route::get('/login', 'LoginController@login')->name('login');
+    Route::get('/logout', 'LoginController@logout')->name('logout');
+});
+
 
 // Home
 Route::get('/', 'HomeController@index')->name('home');
