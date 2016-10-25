@@ -11,6 +11,8 @@ use App\Services\EventService;
 class EventsController extends BaseController
 {
     /**
+     * An instance of event service.
+     * 
      * @var EventService
      */
     protected $eventService;
