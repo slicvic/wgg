@@ -21,9 +21,11 @@ wgg.app = (function($, logger, globalSettings) {
             },
             cancelEvent: function(e) {
                 if (confirm('Are you sure you want to cancel this event?')) {
-                    //
+                    // Proceed
                 } else {
+                    // Do no thing
                     e.preventDefault();
+                    return false;
                 }
             }
         },
