@@ -7,7 +7,7 @@ use App\Models\EventStatus;
 class EventPresenter extends BasePresenter
 {
     /**
-     * Present the start date time.
+     * Present start date time.
      *
      * @param string $format
      * @return string
@@ -18,7 +18,7 @@ class EventPresenter extends BasePresenter
     }
 
     /**
-     * Present the status.
+     * Present status.
      *
      * @param bool $asHtml
      * @return string
@@ -42,7 +42,7 @@ class EventPresenter extends BasePresenter
     }
 
     /**
-     * Calculate the duration in hours.
+     * Present duration in hours.
      *
      * @return int
      */
