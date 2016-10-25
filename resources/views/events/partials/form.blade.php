@@ -45,13 +45,13 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Start</label>
+        <label class="col-sm-2 col-form-label">When</label>
         <div class="col-sm-10">
             <input
                 type="text"
                 name="event[start_at]"
-                class="form-control js-datetimepicker"
-                value="{{ ($event->exists) ? $event->present()->start() : '' }}"
+                class="form-control js-datxetimepicker"
+                value="{{ ($event->exists) ? $event->present()->when() : '' }}"
                 required>
         </div>
     </div>

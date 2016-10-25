@@ -9,11 +9,12 @@ class EventPresenter extends BasePresenter
     /**
      * Present start date time.
      *
-     * @param string $format
+     * @param bool $verbose
      * @return string
      */
-    public function start($format = 'm/d/Y g:i A')
+    public function when($verbose = false)
     {
+        $format = ($verbose) ? 'l, M j, Y g:i A' : 'm/d/Y g:i A';
         return date($format, strtotime($this->model->start_at));
     }
 
@@ -27,10 +28,7 @@ class EventPresenter extends BasePresenter
     {
         switch ($this->model->status->id) {
             case EventStatus::ACTIVE:
-                $now = time();
-                $ending = strtotime($this->model->end_at);
-
-                if ($now > $ending) {
+                if ($this->model->hasPassed()) {
                     return ($asHtml) ? '<span class="label label-warning">Passed</span>' : 'Passed';
                 }
 

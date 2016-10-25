@@ -34,7 +34,7 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Redirect to a given path with a given error message.
+     * Redirect to a path with an error message.
      *
      * @param  string $path
      * @param  string $message
@@ -45,5 +45,31 @@ abstract class BaseController extends Controller
         $this->flashError($message);
 
         return redirect()->route($path);
+    }
+
+    /**
+     * Redirect back with an error message.
+     *
+     * @param  string $message
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function redirectBackWithError($message)
+    {
+        $this->flashError($message);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Redirect back with a success message.
+     *
+     * @param  string $message
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function redirectBackWithSuccess($message)
+    {
+        $this->flashSuccess($message);
+
+        return redirect()->back();
     }
 }

@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
                 'errors' => [
                     'html' => view('flash-message')->withErrors($errors)->render()
                 ]
-            ]);
+            ], $exception->getResponse()->getStatusCode());
         }
 
         return parent::render($request, $exception);

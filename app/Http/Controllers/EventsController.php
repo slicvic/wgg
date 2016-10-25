@@ -28,7 +28,8 @@ class EventsController extends BaseController
             'create',
             'store',
             'edit',
-            'update'
+            'update',
+            'cancel'
         ]);
 
         $this->eventService = $eventService;
@@ -85,11 +86,11 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return $this->redirectWithError('home', 'Event not found.');
+            return $this->redirectBackWithError('Event not found.');
         }
 
         if ($event->user_id !== Auth::user()->id) {
-            return $this->redirectWithError('home', 'Unauthorized.');
+            return $this->redirectBackWithError('Unauthorized.');
         }
 
         return view('events.edit', ['event' => $event]);
@@ -107,11 +108,11 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return $this->redirectWithError('home', 'Event not found.');
+            return response()->json(['error' => 'Event not found.'], 404);
         }
 
         if ($event->user_id !== Auth::user()->id) {
-            return $this->redirectWithError('home', 'Unauthorized.');
+            return response()->json(['error' => 'Unauthorized.'], 401);
         }
 
         $input = $request->only([
@@ -132,5 +133,22 @@ class EventsController extends BaseController
         $this->flashSuccess('Game updated successfully.');
 
         return response()->json();
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $event = Event::find($id);
+
+        if (!$event) {
+            return $this->redirectBackWithError('Event not found.');
+        }
+
+        if ($event->user_id !== Auth::user()->id) {
+            return $this->redirectBackWithError('Unauthorized.');
+        }
+
+        Event::cancelById($id);
+
+        return $this->redirectBackWithSuccess('Event canceled successfully.');
     }
 }

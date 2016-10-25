@@ -68,6 +68,29 @@ class Event extends Model
     }
 
     /**
+     * Check if the event is active.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return ($this->status_id == EventStatus::ACTIVE);
+    }
+
+    /**
+     * Check if the event has passed.
+     *
+     * @return bool
+     */
+    public function hasPassed()
+    {
+        $now = time();
+        $ending = strtotime($this->end_at);
+
+        return ($now > $ending);
+    }
+
+    /**
      * Find all events by user id.
      *
      * @param int $id
@@ -81,5 +104,15 @@ class Event extends Model
                 ->get();
 
         return $events;
+    }
+
+    /**
+     * Cancel event by id.
+     *
+     * @param int $id
+     */
+    public static function cancelById($id)
+    {
+        static::where('id', $id)->update(['status_id' => EventStatus::CANCELED]);
     }
 }

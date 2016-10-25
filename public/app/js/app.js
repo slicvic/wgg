@@ -18,6 +18,13 @@ wgg.app = (function($, logger, globalSettings) {
         methods: {
             login: function() {
                 wgg.services.facebook.login();
+            },
+            cancelEvent: function(e) {
+                if (confirm('Are you sure you want to cancel this event?')) {
+                    //
+                } else {
+                    e.preventDefault();
+                }
             }
         },
         mounted: function() {
@@ -48,13 +55,15 @@ wgg.app = (function($, logger, globalSettings) {
 
             $.post(form.attr('action'), form.serialize())
                 .done(function(response) {
-                    if (response.errors) {
-                        vue.events.form.validationErrors = response.errors.html;
-                    } else {
-                        window.location = globalSettings.application.routes.account.events;
-                    }
+                    window.location = globalSettings.application.routes.account.events;
                 }).fail(function(response) {
-                    toastr.error('Something went wrong, please try again', 'Whoops!');
+                    if (response.responseJSON.error) {
+                        toastr.error(response.responseJSON.error, 'Whoops!');
+                    } else if (response.responseJSON.errors) {
+                        vue.events.form.validationErrors = response.responseJSON.errors.html;
+                    } else {
+                        toastr.error('Something went wrong, please try again', 'Whoops!');
+                    }
                 }).always(function() {
                     vue.events.form.submitted = false;
                     vue.events.form.submitButtonText = 'Save';
@@ -112,10 +121,6 @@ wgg.app = (function($, logger, globalSettings) {
         }).on('typeahead:selected', function (obj, datum) {
             var el = $(this);
 
-            // Clear previous latitude and longitude
-            $(el.data('bind-field-lat')).val('');
-            $(el.data('bind-field-lng')).val('');
-
             // Get new latitude and longitude
             settings.google.maps.services.places.getDetails({
                 placeId: datum.place_id
@@ -126,6 +131,12 @@ wgg.app = (function($, logger, globalSettings) {
                     $(el.data('bind-field-lng')).val(place.geometry.location.lng());
                 }
             });
+        }).on('change', function (e) {
+            var el = $(this);
+
+            // Clear previous latitude and longitude
+            $(el.data('bind-field-lat')).val('');
+            $(el.data('bind-field-lng')).val('');
         });
 
         // Bind venue autocomplete
@@ -159,12 +170,6 @@ wgg.app = (function($, logger, globalSettings) {
         }).on('typeahead:selected', function (obj, datum) {
             var el = $(this);
 
-            // Clear previous latitude and longitude
-            $(el.data('bind-field-lat')).val('');
-            $(el.data('bind-field-lng')).val('');
-            $(el.data('bind-field-address')).val('');
-            $(el.data('bind-field-url')).val('');
-
             // Get new latitude and longitude
             settings.google.maps.services.places.getDetails({
                 placeId: datum.place_id
@@ -177,6 +182,14 @@ wgg.app = (function($, logger, globalSettings) {
                     $(el.data('bind-field-url')).val(place.url);
                 }
             });
+        }).on('change', function(e) {
+            var el = $(this);
+
+            // Clear previous latitude and longitude
+            $(el.data('bind-field-lat')).val('');
+            $(el.data('bind-field-lng')).val('');
+            $(el.data('bind-field-address')).val('');
+            $(el.data('bind-field-url')).val('');
         });
     }
 
