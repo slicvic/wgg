@@ -9,7 +9,7 @@ use App\Models\SocialAccountType;
 class UserPresenter extends BasePresenter
 {
     /**
-     * Get the profile picture URL.
+     * Present profile picture URL.
      *
      * @param  int $width
      * @param  int $height
@@ -17,7 +17,7 @@ class UserPresenter extends BasePresenter
      */
     public function profilePictureUrl($width = 30, $height = 30)
     {
-        $url = null;
+        $url = '';
 
         switch($this->model->social_account_type_id) {
             case SocialAccountType::FACEBOOK:

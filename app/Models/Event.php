@@ -66,4 +66,20 @@ class Event extends Model
     {
         return $this->hasOne('App\Models\EventVenue', 'id', 'venue_id');
     }
+
+    /**
+     * Find all events by user id.
+     *
+     * @param int $id
+     * @return Event[]
+     */
+    public static function findAllByUserId($id)
+    {
+        $events = static::where(['user_id' => $id])
+                ->orderBy('status_id', 'ASC')
+                ->orderBy('start_at', 'DESC')
+                ->get();
+
+        return $events;
+    }
 }

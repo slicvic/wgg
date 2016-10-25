@@ -8,7 +8,7 @@ wgg.app = (function($, logger, globalSettings) {
         el: '#app',
         data: {
             events: {
-                addEditForm: {
+                form: {
                     validationErrors: ''
                 }
             }
@@ -20,7 +20,7 @@ wgg.app = (function($, logger, globalSettings) {
         },
         mounted: function() {
             initServices();
-            initjQueryBindings();
+            setjQueryBindings();
         }
     });
 
@@ -28,30 +28,32 @@ wgg.app = (function($, logger, globalSettings) {
         wgg.services.facebook.init();
     }
 
-    function initjQueryBindings() {
+    function setjQueryBindings() {
         $('#events--add-edit-form').submit(function(e) {
             e.preventDefault();
             var form = $(this);
 
-            vue.events.addEditForm.validationErrors = '';
+            vue.events.form.validationErrors = '';
 
             $.post(form.attr('action'), form.serialize())
                 .done(function(response) {
                     if (response.errors) {
-                        vue.events.addEditForm.validationErrors = response.errors.html;
+                        vue.events.form.validationErrors = response.errors.html;
                     } else {
-
+                        window.location = globalSettings.application.routes.account.events;
                     }
                 }).fail(function(response) {
                     alert('Error');
                 });
         });
 
+        // Bind date pickers
         $('.js-datepicker').datepicker({
             todayHighlight: true,
             autoclose: true
         });
 
+        // Bind datetime pickers
         $('.js-datetimepicker').datetimepicker({
             minDate: Date.now(),
             icons: {
@@ -64,6 +66,7 @@ wgg.app = (function($, logger, globalSettings) {
             }
         });
 
+        // Bind city autocomplete
         $('.js-typeahead-city').typeahead({
             hint: true,
             highlight: true,
@@ -111,6 +114,7 @@ wgg.app = (function($, logger, globalSettings) {
             });
         });
 
+        // Bind venue autocomplete
         $('.js-typeahead-venue').typeahead({
             hint: true,
             highlight: true,

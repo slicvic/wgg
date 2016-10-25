@@ -74,7 +74,10 @@
                     application: {
                         csrfToken: '{{ csrf_token() }}',
                         routes: {
-                            login: '{{ route('login') }}'
+                            login: '{{ route('login') }}',
+                            account: {
+                                events: '{{ route('account.events.index') }}'
+                            }
                         },
                         facebook: {
                             appId: {{ env('FACEBOOK_APP_ID') }}
@@ -91,7 +94,7 @@
                     }
                 };
             </script>
-            <script src="/app/js/util/logger.js"></script>
+            <script src="/app/js/utils/logger.js"></script>
             <script src="/app/js/services/facebook.js"></script>
             <script src="/app/js/app.js"></script>
         </div>

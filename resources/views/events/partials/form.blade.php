@@ -1,3 +1,5 @@
+<div v-html="events.form.validationErrors"></div>
+
 <form action="{{ ($event->exists) ? route('events.update', ['id' => $event->id]) : route('events.store') }}" method="post" id="events--add-edit-form">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group row">
@@ -35,7 +37,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Start</label>
         <div class="col-sm-10">
-            <input type="text" name="event[start_at]" class="form-control js-datetimepicker" value="{{ ($event->exists) ? $event->present()->startAt() : '' }}" _required>
+            <input type="text" name="event[start_at]" class="form-control js-datetimepicker" value="{{ ($event->exists) ? $event->present()->start() : '' }}" _required>
         </div>
     </div>
     <div class="form-group row">
@@ -69,6 +71,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
+            <a href="{{ route('home') }}" class="btn btn-default">Cancel</button>
             <button type="submit" class="btn btn-success">Save</button>
         </div>
     </div>

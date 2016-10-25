@@ -2,18 +2,40 @@
 
 namespace App\Presenters;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\EventStatus;
 
 class EventPresenter extends BasePresenter
 {
     /**
-     * Calculate the duration in hours.
+     * Present the start date time.
      *
-     * @return int
+     * @return string
      */
-    public function startAt()
+    public function start()
     {
         return date('m/d/Y g:i A', strtotime($this->model->start_at));
+    }
+
+    /**
+     * Present the status.
+     *
+     * @param bool $asHtml
+     * @return string
+     */
+    public function status($asHtml = false)
+    {
+        $now = time();
+        $ending = strtotime($this->model->end_at);
+
+        switch ($this->model->status->id) {
+            case EventStatus::ACTIVE:
+                if ($now > $ending) {
+                    return ($asHtml) ? '<span class="label label-warning">Passed</span>' : 'Passed';
+                }
+                return ($asHtml) ? '<span class="label label-success">Active</span>' : 'Active';
+            default:
+                return ($asHtml) ? '<span class="label label-danger">Canceled</span>' : 'Canceled';
+        }
     }
 
     /**

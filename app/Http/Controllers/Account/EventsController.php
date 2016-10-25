@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Event;
 
 class EventsController extends BaseController
 {
@@ -24,7 +25,7 @@ class EventsController extends BaseController
      */
     public function index(Request $request)
     {
-        $events = Auth::user()->events;
+        $events = Event::findAllByUserId(Auth::user()->id);
 
         return view('account.events.index', ['events' => $events]);
     }

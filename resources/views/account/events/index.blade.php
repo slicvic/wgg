@@ -1,17 +1,17 @@
 @extends('layouts.default')
 
 @section('content')
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <td>Title</td>
-            <td>Type</td>
-            <td>Status</td>
-            <td>Where</td>
-            <td>From</td>
-            <td>To</td>
-            <td>Duration</td>
-            <td>Actions</td>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Where</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Duration</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -19,7 +19,7 @@
             <tr>
                 <td>{{ $event->title }}</td>
                 <td>{{ $event->type->title }}</td>
-                <td>{{ $event->status->title }}</td>
+                <td>{!! $event->present()->status(true) !!}</td>
                 <td>{{ $event->venue->name }}</td>
                 <td>{{ $event->start_at }}</td>
                 <td>{{ $event->end_at }}</td>

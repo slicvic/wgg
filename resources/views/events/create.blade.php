@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
 @section('content')
-    <div v-html="events.addEditForm.validationErrors"></div>
+    <h1>Create Event</h1>
     @include('events.partials.form', ['event' => $event])
 @endsection
