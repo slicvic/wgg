@@ -50,7 +50,7 @@
             <input
                 type="text"
                 name="event[start_at]"
-                class="form-control js-datxetimepicker"
+                class="form-control js-datetimepicker"
                 value="{{ ($event->exists) ? $event->present()->when() : '' }}"
                 required>
         </div>
@@ -59,7 +59,7 @@
         <label class="col-sm-2 col-form-label">Duration</label>
         <div class="col-sm-10">
             <select name="event[duration]" class="form-control">
-                <?php $duration = $event->present()->duration() ?>
+                <?php $duration = $event->calculateDuration() ?>
                 @for ($i=1; $i <= 10; $i++)
                     <option value="{{ $i }}"{{ ($i == $duration ) ? ' selected' : '' }}>{{ $i }} {{ ($i == 1) ? 'hour' : 'hours' }}</option>
                 @endfor

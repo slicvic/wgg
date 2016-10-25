@@ -91,6 +91,16 @@ class Event extends Model
     }
 
     /**
+     * Calculate the duration in hours.
+     *
+     * @return int
+     */
+    public function calculateDuration()
+    {
+        return (strtotime($this->end_at) - strtotime($this->start_at)) / 3600;
+    }
+
+    /**
      * Find all events by user id.
      *
      * @param int $id

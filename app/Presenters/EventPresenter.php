@@ -7,6 +7,16 @@ use App\Models\EventStatus;
 class EventPresenter extends BasePresenter
 {
     /**
+     * Present title.
+     *
+     * @return string
+     */
+    public function title()
+    {
+        return ucwords(strtolower($this->model->title));
+    }
+
+    /**
      * Present start date time.
      *
      * @param bool $verbose
@@ -15,27 +25,28 @@ class EventPresenter extends BasePresenter
     public function when($verbose = false)
     {
         $format = ($verbose) ? 'l, M j, Y g:i A' : 'm/d/Y g:i A';
+
         return date($format, strtotime($this->model->start_at));
     }
 
     /**
-     * Present status.
+     * Present status as plain text or bootstrap tag.
      *
-     * @param bool $asHtml
+     * @param bool $asTag
      * @return string
      */
-    public function status($asHtml = false)
+    public function status($asTag = false)
     {
         switch ($this->model->status->id) {
             case EventStatus::ACTIVE:
                 if ($this->model->hasPassed()) {
-                    return ($asHtml) ? '<span class="label label-warning">Passed</span>' : 'Passed';
+                    return ($asTag) ? '<span class="tag tag-warning">Passed</span>' : 'Passed';
                 }
 
-                return ($asHtml) ? '<span class="label label-success">Active</span>' : 'Active';
+                return ($asTag) ? '<span class="tag tag-success">On</span>' : 'On';
 
             default:
-                return ($asHtml) ? '<span class="label label-danger">Canceled</span>' : 'Canceled';
+                return ($asTag) ? '<span class="tag tag-danger">Canceled</span>' : 'Canceled';
         }
     }
 
@@ -46,6 +57,8 @@ class EventPresenter extends BasePresenter
      */
     public function duration()
     {
-        return (strtotime($this->model->end_at) - strtotime($this->model->start_at)) / 3600;
+        $duration = $this->model->calculateDuration();
+        $duration .= ($duration > 1) ? ' hours' : ' hour';
+        return $duration;
     }
 }

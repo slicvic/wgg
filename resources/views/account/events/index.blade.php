@@ -16,20 +16,19 @@
     <tbody>
         @foreach ($events as $event)
             <tr>
-                <td>{{ $event->title }}</td>
+                <td>{{ $event->present()->title() }}</td>
                 <td>{{ $event->type->title }}</td>
                 <td>{!! $event->present()->status(true) !!}</td>
                 <td>{{ $event->venue->name }}</td>
                 <td>{{ $event->present()->when(true) }}</td>
-                <td>{{ $event->end_at }}</td>
                 <td>{{ $event->present()->duration() }}</td>
                 <td>
-                    <a href="{{ route('events.edit', ['id' => $event->id]) }}" class="btn btn-primary">Edit</button>
+                    <a href="{{ route('events.edit', ['id' => $event->id]) }}" class="btn btn-primary">Edit</a>
                     @if ($event->isActive() && !$event->hasPassed())
                         <a
                             href="{{ route('events.cancel', ['id' => $event->id]) }}"
                             class="btn btn-danger"
-                            v-on:click="cancelEvent">Cancel</button>
+                            v-on:click="cancelEvent">Cancel</a>
                     @endif
                 </td>
             </tr>

@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('event_statuses')->insert([
-            ['name' => 'active', 'title' => 'Active'],
+            ['name' => 'active', 'title' => 'On'],
             ['name' => 'canceled', 'title' => 'Canceled']
         ]);
 
