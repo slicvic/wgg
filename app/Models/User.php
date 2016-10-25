@@ -5,9 +5,19 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Models\SocialAccountType;
+use App\Presenters\PresentableTrait;
+
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, PresentableTrait;
+
+    /**
+     * The presenter class name.
+     *
+     * @var string
+     */
+    protected $presenterClassName = 'App\Presenters\UserPresenter';
 
     /**
      * @inheritdoc
@@ -30,6 +40,16 @@ class User extends Authenticatable
     public function socialAccountType()
     {
         return $this->hasOne('App\Models\SocialAccountType');
+    }
+
+    /**
+     * Get the events associated with the user.
+     *
+     * @return \App\Models\Event[]
+     */
+    public function events()
+    {
+        return $this->hasMany('App\Models\Event');
     }
 
    /**
@@ -56,25 +76,5 @@ class User extends Authenticatable
         return static::where('social_account_id', $socialAccountId)
                     ->where('social_account_type_id', $socialAccountTypeId)
                     ->first();
-    }
-
-    /**
-     * Create or update a facebook user.
-     *
-     * @param  array $attributes
-     * @param  User $user
-     * @return User
-     */
-    public static function createOrUpdateFacebookUser(array $attributes = [], User $user = null)
-    {
-        $attributes['social_account_type_id'] = SocialAccountType::FACEBOOK;
-
-        if (!$user) {
-            $user = new static;
-        }
-
-        $user->fill($attributes)->save();
-
-        return $user;
     }
 }

@@ -16,10 +16,10 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('social_account_id', 255)->nullable();
-            $table->unsignedInteger('social_account_type_id')->nullable();
+            $table->unsignedInteger('social_account_type_id');
             $table->string('name');
-            $table->string('email');
-            $table->string('location_name', 255);
+            $table->string('email')->nullable();
+            $table->string('location_name', 255)->nullable();
             $table->unsignedTinyInteger('active')->default(0);
             $table->timestamp('loggedin_at')->nullable();
             $table->timestamps();

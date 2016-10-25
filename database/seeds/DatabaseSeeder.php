@@ -23,5 +23,14 @@ class DatabaseSeeder extends Seeder
             ['name' => 'active', 'title' => 'Active'],
             ['name' => 'canceled', 'title' => 'Canceled']
         ]);
+
+        DB::table('users')->insert([
+            [
+                'name' => 'Victor Lantigua',
+                'social_account_id' => '5128822',
+                'social_account_type_id' => 1,
+                'active' => 1
+            ]
+        ]);
     }
 }

@@ -16,7 +16,7 @@ use App\Exceptions\AccountDeactivatedException;
 class LoginController extends BaseLoginController
 {
     /**
-     * Logs in a facebook user.
+     * Log in a Facebook user.
      *
      * @param  Request $request
      * @return \Illuminate\Routing\Redirector
@@ -62,21 +62,22 @@ class LoginController extends BaseLoginController
             }
 
             // Create/update user record
-            $user = User::createOrUpdateFacebookUser([
-                'social_account_id' => $facebookUser['id'],
-                'name' => $facebookUser['name'],
-                'email' => (isset($facebookUser['email'])) ? $facebookUser['email'] : '',
-                'location_name' => (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '',
-                'loggedin_at' => date('Y-m-d H:i:s'),
-                'active' => 1
-            ], $user);
+            $user = ($user) ?: new User;
+            $user->social_account_type_id = SocialAccountType::FACEBOOK;
+            $user->social_account_id = $facebookUser['id'];
+            $user->name = $facebookUser['name'];
+            $user->email = (isset($facebookUser['email'])) ? $facebookUser['email'] : '';
+            $user->location_name = (isset($facebookUser['location'])) ? $facebookUser['location']->getName() : '';
+            $user->loggedin_at = date('Y-m-d H:i:s');
+            $user->active = 1;
+            $user->save();
 
             // Log in user
             Auth::loginUsingId($user->id);
         } catch(FacebookResponseException $e) {
-            $this->flashError('Facebook login error: ' . $e->getMessage());
+            $this->flashError('A Facebook login error occurred. ' . $e->getMessage());
         } catch(FacebookSDKException $e) {
-            $this->flashError('Facebook login error: ' . $e->getMessage());
+            $this->flashError('A Facebook login error occurred. ' . $e->getMessage());
         } catch(AccountDeactivatedException $e) {
             $this->flashError($e->getMessage());
         }

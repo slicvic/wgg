@@ -12,11 +12,4 @@
     <div id="sss"></div>
 
 </form>
-@if (Auth::check())
-Logged in
-<a href="/logout">Logout</a>
-@else
-<a href="#" onclick="MyApp.services.facebook.login();">Login</a>
-@endif
-
 @endsection

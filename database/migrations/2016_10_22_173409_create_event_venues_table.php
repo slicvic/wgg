@@ -17,6 +17,7 @@ class CreateEventVenuesTable extends Migration
             $table->increments('id');
             $table->string('name', 255)->default('');
             $table->string('address', 255)->default('');
+            $table->string('url', 255)->default('');
             $table->timestamps();
         });
 

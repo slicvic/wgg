@@ -15,8 +15,25 @@ class EventVenue extends Model
     protected $fillable = [
         'name',
         'address',
-        'latlng'
+        'latlng',
+        'url'
     ];
+
+    /**
+     * Override to convert latlng to string.
+     */
+    public function newQuery()
+    {
+        $builder = parent::newQuery();
+
+        if (is_null($builder->getQuery()->columns)) {
+            $builder->getQuery()->columns = ['*'];
+        }
+
+        $builder->getQuery()->selectRaw('ST_AsText(latlng) AS latlng');
+
+        return $builder;
+    }
 
     /**
      * Set latlng attribute.
@@ -24,7 +41,7 @@ class EventVenue extends Model
      * @param  array|null $value
      * @throws InvalidArgumentException
      */
-    public function setLatlngAttribute($value)
+    protected function setLatlngAttribute($value)
     {
         if ($value === null) {
             $this->attributes['latlng'] = null;
@@ -41,7 +58,7 @@ class EventVenue extends Model
      * @param  array|null $value
      * @return array|null Array in the form of [lat, lng] or null.
      */
-    public function getLatlngAttribute($value)
+    protected function getLatlngAttribute($value)
     {
         if (empty($value)) {
             return null;
@@ -50,21 +67,5 @@ class EventVenue extends Model
         $value = str_replace(['POINT(', ')'], '', $value);
 
         return explode(' ', $value);
-    }
-
-    /**
-     * Override to convert latlng to string.
-     */
-    public function newQuery()
-    {
-        $builder = parent::newQuery();
-
-        if (is_null($builder->getQuery()->columns)) {
-            $builder->getQuery()->columns = ['*'];
-        }
-
-        $builder->getQuery()->selectRaw('ST_AsText(latlng) AS latlng');
-
-        return $builder;
     }
 }

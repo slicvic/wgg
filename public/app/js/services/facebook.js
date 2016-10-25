@@ -1,6 +1,7 @@
-'use strict';
-MyApp.services = MyApp.services || {};
-MyApp.services.facebook = (function($, logger, globalSettings) {
+'use strict'
+var wgg = wgg || {};
+wgg.services = wgg.services || {};
+wgg.services.facebook = (function(logger, globalSettings) {
     function init() {
         (function(d, s, id){
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -33,7 +34,7 @@ MyApp.services.facebook = (function($, logger, globalSettings) {
     }
 
     return {
-        init: init,
-        login: login
+        login: login,
+        init: init
     };
-})(jQuery, Logger, globalSettings);
+})(Logger, globalSettings);
