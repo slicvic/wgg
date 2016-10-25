@@ -12,7 +12,7 @@ class EventsController extends BaseController
 {
     /**
      * An instance of event service.
-     * 
+     *
      * @var EventService
      */
     protected $eventService;
@@ -67,6 +67,8 @@ class EventsController extends BaseController
         ]);
 
         $this->eventService->create($input);
+
+        $this->flashSuccess('Game created successfully.');
 
         return response()->json();
     }
@@ -126,6 +128,8 @@ class EventsController extends BaseController
         ]);
 
         $this->eventService->update($event, $input);
+
+        $this->flashSuccess('Game updated successfully.');
 
         return response()->json();
     }

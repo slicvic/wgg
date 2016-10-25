@@ -13,6 +13,8 @@
             <link href="/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
             <link href="/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
             <link href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+            <link href="/bower_components/toastr/toastr.min.css" rel="stylesheet">
+
             <link href="/app/css/typeaheadjs.css" rel="stylesheet">
             <link href="/app/css/app.css" rel="stylesheet">
         @show
@@ -62,12 +64,14 @@
 
             <script src="/bower_components/jquery/dist/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
-            <script src="/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+            <script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+            <!--<script src="/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>-->
+            <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
             <script src="/bower_components/typeahead.js/dist/bloodhound.min.js"></script>
             <script src="/bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
             <script src="/bower_components/vue/dist/vue.min.js"></script>
-            <script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
-            <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+            <script src="/bower_components/parsleyjs/dist/parsley.min.js"></script>
+            <script src="/bower_components/toastr/toastr.min.js"></script>
             <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
             <script type="text/javascript">
                 var globalSettings = {

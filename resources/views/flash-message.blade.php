@@ -4,6 +4,12 @@
     </div>
 @endif
 
+@if (Session::has('success'))
+    <div class="alert alert-success">
+        <strong>Woohoo!</strong> {{ Session::get('success') }}
+    </div>
+@endif
+
 @if ($errors && $errors instanceof \Illuminate\Support\MessageBag && count($errors) > 0)
     <div class="alert alert-danger">
         <b>Whoops! There were some error!</b>

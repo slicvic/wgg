@@ -9,7 +9,9 @@ wgg.app = (function($, logger, globalSettings) {
         data: {
             events: {
                 form: {
-                    validationErrors: ''
+                    validationErrors: '',
+                    submitted: false,
+                    submitButtonText: 'Save'
                 }
             }
         },
@@ -29,11 +31,20 @@ wgg.app = (function($, logger, globalSettings) {
     }
 
     function setjQueryBindings() {
+        // Bind form validation
+        $('.js-validate-form').parsley();
+        Parsley.addMessages('en', {
+            required:  'Please put something here.',
+        });
+
+        // Bind form submit
         $('#events--add-edit-form').submit(function(e) {
             e.preventDefault();
             var form = $(this);
 
             vue.events.form.validationErrors = '';
+            vue.events.form.submitted = true;
+            vue.events.form.submitButtonText = 'Saving...';
 
             $.post(form.attr('action'), form.serialize())
                 .done(function(response) {
@@ -43,15 +54,18 @@ wgg.app = (function($, logger, globalSettings) {
                         window.location = globalSettings.application.routes.account.events;
                     }
                 }).fail(function(response) {
-                    alert('Error');
+                    toastr.error('Something went wrong, please try again', 'Whoops!');
+                }).always(function() {
+                    vue.events.form.submitted = false;
+                    vue.events.form.submitButtonText = 'Save';
                 });
         });
 
         // Bind date pickers
-        $('.js-datepicker').datepicker({
+        /*$('.js-datepicker').datepicker({
             todayHighlight: true,
             autoclose: true
-        });
+        });*/
 
         // Bind datetime pickers
         $('.js-datetimepicker').datetimepicker({

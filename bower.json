@@ -16,6 +16,8 @@
     "typeahead.js": "^0.11.1",
     "font-awesome": "fontawesome#^4.6.3",
     "vue": "^2.0.3",
-    "eonasdan-bootstrap-datetimepicker": "^4.17.43"
+    "eonasdan-bootstrap-datetimepicker": "^4.17.43",
+    "parsleyjs": "^2.5.1",
+    "toastr": "^2.1.3"
   }
 }

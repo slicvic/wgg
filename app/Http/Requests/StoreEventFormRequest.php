@@ -44,12 +44,12 @@ class StoreEventFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'event.title.required' => 'The title cannot be blank.',
-            'event.type_id.required' => 'The sport cannot be blank.',
-            'event.status_id.required' => 'The status cannot be blank.',
-            'event.start_at.required' => 'The start date and time cannot be blank.',
-            'event.duration.required' => 'The duration cannot be blank.',
-            'venue.name.required' => 'The venue cannot be blank.'
+            'event.title.required' => 'The title cannot be empty.',
+            'event.type_id.required' => 'The sport cannot be empty.',
+            'event.status_id.required' => 'The status cannot be empty.',
+            'event.start_at.required' => 'The start date and time cannot be empty.',
+            'event.duration.required' => 'The duration cannot be empty.',
+            'venue.name.required' => 'The venue cannot be empty.'
         ];
     }
 

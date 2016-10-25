@@ -24,6 +24,16 @@ abstract class BaseController extends Controller
     }
 
     /**
+     * Flash success message.
+     *
+     * @param string $message
+     */
+    protected function flashSuccess($message)
+    {
+        session()->flash('success', $message);
+    }
+
+    /**
      * Redirect to a given path with a given error message.
      *
      * @param  string $path

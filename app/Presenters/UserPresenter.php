@@ -21,8 +21,8 @@ class UserPresenter extends BasePresenter
 
         switch($this->model->social_account_type_id) {
             case SocialAccountType::FACEBOOK:
-                $url = str_replace('{USER_ID}', $this->model->social_account_id, env('FACEBOOK_PROFILE_PICTURE_URL'));
-                $url .= sprintf('?width=%s&height=%s', $width, $height);
+                $url = str_replace('{id}', $this->model->social_account_id, env('FACEBOOK_PROFILE_PICTURE_URL'));
+                $url .= ($height) ? sprintf('?width=%s&height=%s', $width, $height) : sprintf('?width=%s', $width);
                 break;
         }
 
