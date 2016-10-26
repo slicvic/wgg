@@ -82,6 +82,10 @@ class LoginController extends BaseLoginController
             $this->flashError($e->getMessage());
         }
 
+        if ($redirectUrl = $request->query('redirect')) {
+            return redirect($redirectUrl);
+        }
+
         return redirect()->route('home');
     }
 }

@@ -13,7 +13,7 @@ wgg.services.facebook = (function(logger, globalSettings) {
 
         window.fbAsyncInit = function() {
             FB.init({
-                appId: globalSettings.application.facebook.appId,
+                appId: globalSettings.facebook.appId,
                 xfbml: true,
                 version: 'v2.8',
                 cookie: true
@@ -23,10 +23,14 @@ wgg.services.facebook = (function(logger, globalSettings) {
         };
     }
 
-    function login() {
+    function login(redirectUrl) {
         FB.login(function(response) {
             if (response.authResponse) {
-                window.location = globalSettings.application.routes.login;
+                var loginUrl = globalSettings.routes.login;
+                if (redirectUrl) {
+                    loginUrl += '?redirect=' + redirectUrl;
+                }
+                window.location = loginUrl;
             } else {
                 logger.error('login', response);
             }

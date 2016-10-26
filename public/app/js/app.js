@@ -1,82 +1,106 @@
 'use strict';
 var wgg = wgg || {};
-wgg.globalSettings = globalSettings;
-wgg.app = (function($, logger, globalSettings) {
-    var settings = globalSettings.application;
+wgg.app = (function($, logger, Vue, google, globalSettings) {
+    var viewModels = {};
 
-    var vue = new Vue({
-        el: '#app',
-        data: {
-            events: {
-                form: {
-                    validationErrors: '',
-                    submitted: false,
-                    submitButtonText: 'Save'
-                }
-            }
-        },
-        methods: {
-            login: function() {
-                wgg.services.facebook.login();
-            },
-            cancelEvent: function(e) {
-                if (confirm('Are you sure you want to cancel this event?')) {
-                    // Proceed
-                } else {
-                    // Do no thing
-                    e.preventDefault();
-                    return false;
-                }
-            }
-        },
-        mounted: function() {
-            initServices();
-            setjQueryBindings();
-        }
-    });
+    function init() {
+        initServices();
+        initViewModels();
+        setjQueryBindings();
+    }
 
     function initServices() {
         wgg.services.facebook.init();
+        wgg.services.googleMaps.init();
+    }
+
+    function initViewModels() {
+        // Nav
+        viewModels.nav = new Vue({
+            el: '#nav',
+            methods: {
+                login: function() {
+                    wgg.services.facebook.login();
+                },
+                createEvent: function() {
+                    if (globalSettings.user.isLoggedIn) {
+                        window.location = globalSettings.routes.events.create;
+                    } else {
+                        wgg.services.facebook.login(globalSettings.routes.events.create);
+                    }
+                }
+            }
+        });
+
+        // Events -- Create/Edit Form
+        viewModels.events = {};
+        viewModels.events.createEditForm = new Vue({
+            el: '#events--create-edit-form',
+            data: {
+                errors: '',
+                submitted: false,
+                submitButtonText: 'Save'
+            },
+            watch: {
+                submitted: function(val) {
+                    if (val) {
+                        this.submitButtonText = 'Saving...';
+                        this.errors = '';
+                    } else {
+                        this.submitButtonText = 'Save';
+                    }
+                }
+            }
+        });
+
+        // Events -- My Events
+        viewModels.events.myEvents = new Vue({
+            el: '#events--my-events',
+            methods: {
+                cancelEvent: function(e) {
+                    if (!confirm('Are you sure you want to cancel this game?')) {
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
     }
 
     function setjQueryBindings() {
         // Bind form validation
         $('.js-validate-form').parsley();
         Parsley.addMessages('en', {
-            required:  'Please put something here.',
+            required:  'This field is required.',
         });
 
         // Bind form submit
-        $('#events--add-edit-form').submit(function(e) {
+        $('#events--create-edit-form').submit(function(e) {
             e.preventDefault();
             var form = $(this);
 
-            vue.events.form.validationErrors = '';
-            vue.events.form.submitted = true;
-            vue.events.form.submitButtonText = 'Saving...';
+            viewModels.events.createEditForm.submitted = true;
 
             $.post(form.attr('action'), form.serialize())
                 .done(function(response) {
-                    window.location = globalSettings.application.routes.account.events;
+                    window.location = globalSettings.routes.account.events;
                 }).fail(function(response) {
                     if (response.responseJSON.error) {
                         toastr.error(response.responseJSON.error, 'Whoops!');
                     } else if (response.responseJSON.errors) {
-                        vue.events.form.validationErrors = response.responseJSON.errors.html;
+                        viewModels.events.createEditForm.errors = response.responseJSON.errors.html;
                     } else {
                         toastr.error('Something went wrong, please try again', 'Whoops!');
                     }
                 }).always(function() {
-                    vue.events.form.submitted = false;
-                    vue.events.form.submitButtonText = 'Save';
+                    viewModels.events.createEditForm.submitted = false;
                 });
         });
 
         // Bind date pickers
-        /*$('.js-datepicker').datepicker({
+        $('.js-datepicker').datepicker({
             todayHighlight: true,
             autoclose: true
-        });*/
+        });
 
         // Bind datetime pickers
         $('.js-datetimepicker').datetimepicker({
@@ -110,7 +134,7 @@ wgg.app = (function($, logger, globalSettings) {
                 }
             },
             source: function(query, syncResults, asyncResults) {
-                settings.google.maps.services.autocomplete.getPlacePredictions({
+                globalSettings.google.maps.services.autocomplete.getPlacePredictions({
                     types: ['(cities)'],
                     input: query
                 }, function(results, status) {
@@ -124,7 +148,7 @@ wgg.app = (function($, logger, globalSettings) {
             var el = $(this);
 
             // Get new latitude and longitude
-            settings.google.maps.services.places.getDetails({
+            globalSettings.google.maps.services.places.getDetails({
                 placeId: datum.place_id
             }, function(place, status) {
                 logger.info('PlacesService.getDetails', place);
@@ -160,7 +184,7 @@ wgg.app = (function($, logger, globalSettings) {
                 }
             },
             source: function(query, syncResults, asyncResults) {
-                settings.google.maps.services.places.textSearch({
+                globalSettings.google.maps.services.places.textSearch({
                     query: query
                 }, function(results, status) {
                     logger.info('PlacesService.textSearch', results, status);
@@ -173,7 +197,7 @@ wgg.app = (function($, logger, globalSettings) {
             var el = $(this);
 
             // Get new latitude and longitude
-            settings.google.maps.services.places.getDetails({
+            globalSettings.google.maps.services.places.getDetails({
                 placeId: datum.place_id
             }, function(place, status) {
                 logger.info('PlacesService.getDetails', place);
@@ -195,5 +219,5 @@ wgg.app = (function($, logger, globalSettings) {
         });
     }
 
-    return vue;
-}(jQuery, Logger, globalSettings));
+  init();
+}(jQuery, Logger, Vue, google, globalSettings));

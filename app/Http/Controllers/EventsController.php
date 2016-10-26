@@ -86,7 +86,7 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return $this->redirectBackWithError('Event not found.');
+            return $this->redirectBackWithError('Game not found.');
         }
 
         if ($event->user_id !== Auth::user()->id) {
@@ -108,7 +108,7 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return response()->json(['error' => 'Event not found.'], 404);
+            return response()->json(['error' => 'Game not found.'], 404);
         }
 
         if ($event->user_id !== Auth::user()->id) {
@@ -140,7 +140,7 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return $this->redirectBackWithError('Event not found.');
+            return $this->redirectBackWithError('Game not found.');
         }
 
         if ($event->user_id !== Auth::user()->id) {
@@ -149,6 +149,6 @@ class EventsController extends BaseController
 
         Event::cancelById($id);
 
-        return $this->redirectBackWithSuccess('Event canceled successfully.');
+        return $this->redirectBackWithSuccess('Game canceled successfully.');
     }
 }

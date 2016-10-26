@@ -1,7 +1,12 @@
 @extends('layouts.default')
 
 @section('content')
-<table class="table table-striped">
+<h1>
+    My Games
+    <small class="text-muted">Manage and track your games</small>
+</h1>
+@if (count($events))
+<table id="events--my-events" class="table table-striped">
     <thead>
         <tr>
             <th>Title</th>
@@ -25,8 +30,7 @@
                 <td>
                     <a href="{{ route('events.edit', ['id' => $event->id]) }}" class="btn btn-primary">Edit</a>
                     @if ($event->isActive() && !$event->hasPassed())
-                        <a
-                            href="{{ route('events.cancel', ['id' => $event->id]) }}"
+                        <a href="{{ route('events.cancel', ['id' => $event->id]) }}"
                             class="btn btn-danger"
                             v-on:click="cancelEvent">Cancel</a>
                     @endif
@@ -35,4 +39,8 @@
         @endforeach
     </tbody>
 </table>
+@else
+<hr>
+<p>You have not created any games.</p>
+@endif
 @endsection

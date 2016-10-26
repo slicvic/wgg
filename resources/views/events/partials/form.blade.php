@@ -1,6 +1,5 @@
-<div v-html="events.form.validationErrors"></div>
-
-<form action="{{ ($event->exists) ? route('events.update', ['id' => $event->id]) : route('events.store') }}" method="post" id="events--add-edit-form" class="js-validate-form">
+<form action="{{ ($event->exists) ? route('events.update', ['id' => $event->id]) : route('events.store') }}" method="post" id="events--create-edit-form" class="js-validate-form">
+    <div v-html="errors"></div>
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Title</label>
@@ -18,7 +17,7 @@
         <label class="col-sm-2 col-form-label">Sport</label>
         <div class="col-sm-10">
             <select name="event[type_id]" class="form-control" required>
-                <option value=""></option>
+                <option value="">Pick a Sport</option>
                 @foreach (\App\Models\EventType::all() as $type)
                     <option value="{{ $type->id }}"{{ ($event->type_id == $type->id) ? ' selected' : '' }}>{{ $type->title }}</option>
                 @endforeach
@@ -38,6 +37,7 @@
                 class="form-control js-typeahead-venue"
                 value="{{ ($event->exists) ? $event->venue->name : '' }}"
                 required
+                placeholder="Wilde Park"
                 data-bind-field-lat="#venue-lat"
                 data-bind-field-lng="#venue-lng"
                 data-bind-field-address="#venue-address"
@@ -50,6 +50,7 @@
             <input
                 type="text"
                 name="event[start_at]"
+                placeholder="10/08/2016 1:00 PM"
                 class="form-control js-datetimepicker"
                 value="{{ ($event->exists) ? $event->present()->when() : '' }}"
                 required>
@@ -89,8 +90,8 @@
             <button
                 type="submit"
                 class="btn btn-success"
-                v-bind:disabled="events.form.disableSubmitButton"
-                v-html="events.form.submitButtonText">Save</button>
+                v-bind:disabled="submitted"
+                v-html="submitButtonText">Save</button>
         </div>
     </div>
 </form>
