@@ -16,11 +16,9 @@ Route::group(['namespace' => 'Ajax'], function() {
 
 });
 
-// Facebook
-Route::group(['namespace' => 'Facebook'], function() {
-    Route::get('/login', 'LoginController@login')->name('login');
-    Route::get('/logout', 'LoginController@logout')->name('logout');
-});
+// Login
+Route::get('/login/facebook', 'LoginController@facebook')->name('login.facebook');
+Route::get('/logout', 'LoginController@logout')->name('logout');
 
 Route::group(['namespace' => 'Account'], function() {
     Route::get('/account/events', 'EventsController@index')->name('account.events.index');

@@ -77,7 +77,9 @@
                     isLoggedIn: {{ Auth::check() ? 'true' : 'false' }}
                 },
                 routes: {
-                    login: '{{ route('login') }}',
+                    login: {
+                        facebook: '{{ route('login.facebook') }}'
+                    },
                     account: {
                         events: '{{ route('account.events.index') }}'
                     },

@@ -26,5 +26,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('App\Services\EventService', function ($app) {
             return new \App\Services\EventService();
         });
+
+        $this->app->singleton('App\Services\RegistrarService', function ($app) {
+            return new \App\Services\RegistrarService();
+        });
     }
 }

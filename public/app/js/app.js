@@ -219,5 +219,10 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
         });
     }
 
-  init();
+    return {
+        init: init,
+        viewModels: viewModels
+    }
 }(jQuery, Logger, Vue, google, globalSettings));
+
+wgg.app.init();
