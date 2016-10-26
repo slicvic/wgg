@@ -38,7 +38,7 @@ class RegistrarService
         // Retrieve access token
         $accessToken = $jsHelper->getAccessToken();
 
-        // Throw error if no access token
+        // Throw error if no access token found
         if (!$accessToken) {
             throw new FacebookSDKException('The access token is invalid.');
         }
@@ -46,7 +46,7 @@ class RegistrarService
         // Request user profile info
         $response = $fb->get('/me', $accessToken);
 
-        // Throw error if no user profile info
+        // Throw error if no user profile info found
         if ($response->getHttpStatusCode() != 200) {
             throw new FacebookSDKException('We could not retrieve your profile info.');
         }
@@ -54,7 +54,7 @@ class RegistrarService
         // Extract user profile info
         $facebookUser = $response->getGraphUser();
 
-        // Check if user exists on our end
+        // Check if user already exists on our end
         $user = User::findBySocialAccountIdAndSocialAccountTypeId($facebookUser['id'], SocialAccountType::FACEBOOK);
 
         // Throw error if account is deactivated
