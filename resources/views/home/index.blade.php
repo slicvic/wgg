@@ -1,5 +1,5 @@
 @extends('layouts.default')
-
+@section('body-class', 'home')
 @section('content')
 
 <style>

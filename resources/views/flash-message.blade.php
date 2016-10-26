@@ -1,18 +1,18 @@
 @if (Session::has('error'))
     <div class="alert alert-danger">
-        <strong>Whoops!</strong> {{ Session::get('error') }}
+        <strong><i class="fa fa-times"></i></strong> {{ Session::get('error') }}
     </div>
 @endif
 
 @if (Session::has('success'))
     <div class="alert alert-success">
-        <strong>Woohoo!</strong> {{ Session::get('success') }}
+        <strong><i class="fa fa-check"></i></strong> {{ Session::get('success') }}
     </div>
 @endif
 
 @if ($errors && $errors instanceof \Illuminate\Support\MessageBag && count($errors) > 0)
     <div class="alert alert-danger">
-        <b>Whoops! There were some errors!</b>
+        <strong><i class="fa fa-times"></i> Whoops</strong>
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>

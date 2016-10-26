@@ -67,11 +67,13 @@ class EventsController extends BaseController
             'venue.url'
         ]);
 
-        $this->eventService->create($input);
-
-        $this->flashSuccess('Game created successfully.');
-
-        return response()->json();
+        try {
+            $event = $this->eventService->create($input);
+            $this->flashSuccess(sprintf('"%s" was created successfully.', $event->present()->title()));
+            return response()->json();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred, please try again.'], 500);
+        }
     }
 
     /**
@@ -128,13 +130,22 @@ class EventsController extends BaseController
             'venue.url'
         ]);
 
-        $this->eventService->update($event, $input);
-
-        $this->flashSuccess('Game updated successfully.');
-
-        return response()->json();
+        try {
+            $this->eventService->update($event, $input);
+            $this->flashSuccess(sprintf('"%s" was updated successfully.', $event->present()->title()));
+            return response()->json();
+        } catch(\Exception $e) {
+            return response()->json(['error' => 'An error occurred, please try again.'], 500);
+        }
     }
 
+    /**
+     * Cancel a given event.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function cancel(Request $request, $id)
     {
         $event = Event::find($id);
@@ -149,6 +160,6 @@ class EventsController extends BaseController
 
         Event::cancelById($id);
 
-        return $this->redirectBackWithSuccess('Game canceled successfully.');
+        return $this->redirectBackWithSuccess(sprintf('"%s" has been canceled.', $event->present()->title()));
     }
 }

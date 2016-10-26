@@ -89,7 +89,7 @@
             <a href="{{ route('account.events.index') }}" class="btn btn-default">Cancel</button>
             <button
                 type="submit"
-                class="btn btn-success"
+                class="btn btn-primary btn-lg"
                 v-bind:disabled="submitted"
                 v-html="submitButtonText">Save</button>
         </div>

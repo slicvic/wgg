@@ -58,9 +58,9 @@ class LoginController extends BaseController
                 return redirect($redirectUrl);
             }
         } catch(FacebookResponseException $e) {
-            $this->flashError('A Facebook login error occurred. ' . $e->getMessage() . ' Please try again.');
+            $this->flashError(sprintf('A Facebook login error occurred. %s Please try again.', $e->getMessage()));
         } catch(FacebookSDKException $e) {
-            $this->flashError('A Facebook login error occurred. ' . $e->getMessage() . ' Please try again.');
+            $this->flashError(sprintf('A Facebook login error occurred. %s Please try again.', $e->getMessage()));
         } catch(AccountDeactivatedException $e) {
             $this->flashError($e->getMessage());
         } catch (\Exception $e) {

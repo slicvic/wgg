@@ -23,7 +23,7 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body>
+    <body class="@yield('body-class', '')">
         @section('header')
             <nav id="nav" class="navbar navbar-fixed-top navbar-dark bg-inverse">
                 <a class="navbar-brand" href="{{ route('home') }}">WGG</a>

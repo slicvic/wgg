@@ -13,11 +13,15 @@ class EventService
     /**
      * Create new event.
      *
-     * @param  array  $data
+     * @param array $data
+     * @return Event $event
+     * @throws Exception
      */
     public function create(array $data)
     {
-        DB::transaction(function () use ($data) {
+        DB::beginTransaction();
+
+        try {
             $venue = EventVenue::create([
                 'name' => $data['venue']['name'],
                 'latlng' => array_values($data['venue']['latlng']),
@@ -35,7 +39,14 @@ class EventService
                 'end_at' => date('Y-m-d H:i:s', strtotime($data['event']['start_at']) + ($data['event']['duration'] * 3600)),
                 'description' => $data['event']['description']
             ]);
-        });
+
+            DB::commit();
+
+            return $event;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     /**

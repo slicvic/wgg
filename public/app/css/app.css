@@ -1,4 +1,8 @@
 body {
+    padding-top: 65px;
+}
+
+body.home {
     padding-top: 54px;
 }
 
@@ -36,4 +40,10 @@ textarea.parsley-error {
 
 .parsley-errors-list.filled {
     opacity: 1;
+}
+
+
+h1 small {
+    font-size: 50%;
+    font-weight: 100;
 }

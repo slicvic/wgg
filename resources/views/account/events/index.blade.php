@@ -1,9 +1,9 @@
 @extends('layouts.default')
 
 @section('content')
-<h1>
-    My Games
-    <small class="text-muted">Manage and track your games</small>
+<h1 class="display-4">
+    My games
+    <small class="text-muted">Create and manage your games</small>
 </h1>
 @if (count($events))
 <table id="events--my-events" class="table table-striped">
