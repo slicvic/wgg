@@ -8,18 +8,23 @@
                 type="text"
                 name="event[title]"
                 class="form-control"
-                placeholder="My Soccer Game"
-                value="{{ $event->title }}"
+                placeholder="e.g. Soccer Sundays"
+                value="{{ $event->present()->title() }}"
+                data-parsley-required-message="Give it a title e.g. Soccer Sundays"
                 required>
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Sport</label>
         <div class="col-sm-10">
-            <select name="event[type_id]" class="form-control" required>
+            <select
+                name="event[type_id]"
+                class="form-control"
+                data-parsley-required-message="What's it about?"
+                required>
                 <option value="">Pick a Sport</option>
                 @foreach (\App\Models\EventType::all() as $type)
-                    <option value="{{ $type->id }}"{{ ($event->type_id == $type->id) ? ' selected' : '' }}>{{ $type->title }}</option>
+                    <option value="{{ $type->id }}"{{ ($event->type_id == $type->id) ? ' selected' : '' }}>{{ $type->label }}</option>
                 @endforeach
             </select>
         </div>
@@ -37,7 +42,8 @@
                 class="form-control js-typeahead-venue"
                 value="{{ ($event->exists) ? $event->venue->name : '' }}"
                 required
-                placeholder="Wilde Park"
+                placeholder="e.g. Wilde Park"
+                data-parsley-required-message="Where's it at?"
                 data-bind-field-lat="#venue-lat"
                 data-bind-field-lng="#venue-lng"
                 data-bind-field-address="#venue-address"
@@ -50,9 +56,10 @@
             <input
                 type="text"
                 name="event[start_at]"
-                placeholder="10/08/2016 1:00 PM"
+                placeholder="e.g. 10/08/2016 1:00 PM"
                 class="form-control js-datetimepicker"
                 value="{{ ($event->exists) ? $event->present()->when() : '' }}"
+                data-parsley-required-message="What date and time?"
                 required>
         </div>
     </div>
@@ -72,7 +79,7 @@
         <div class="col-sm-10">
             <select name="event[status_id]" class="form-control">
                 @foreach (\App\Models\EventStatus::all() as $status)
-                    <option value="{{ $status->id }}"{{ ($event->status_id == $status->id) ? ' selected' : '' }}>{{ $status->title }}</option>
+                    <option value="{{ $status->id }}"{{ ($event->status_id == $status->id) ? ' selected' : '' }}>{{ $status->label }}</option>
                 @endforeach
             </select>
         </div>
@@ -86,7 +93,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
-            <a href="{{ route('account.events.index') }}" class="btn btn-default">Cancel</button>
+            <a href="{{ route('account.events.index') }}" class="btn btn-default">Cancel</a>
             <button
                 type="submit"
                 class="btn btn-primary btn-lg"

@@ -31,6 +31,7 @@ Route::post('/events', 'EventsController@store')->name('events.store');
 Route::get('/events/{id}/edit', 'EventsController@edit')->name('events.edit')->where('id', '[0-9]+');
 Route::post('/events/{id}', 'EventsController@update')->name('events.update')->where('id', '[0-9]+');
 Route::get('/events/{id}/cancel', 'EventsController@cancel')->name('events.cancel')->where('id', '[0-9]+');
+Route::get('/events/search', 'EventsController@search')->name('events.search');
 
 // Home
 Route::get('/', 'HomeController@index')->name('home');

@@ -84,7 +84,8 @@
                         events: '{{ route('account.events.index') }}'
                     },
                     events: {
-                        create: '{{ route('events.create') }}'
+                        create: '{{ route('events.create') }}',
+                        search: '{{ route('events.search') }}'
                     }
                 },
                 facebook: {

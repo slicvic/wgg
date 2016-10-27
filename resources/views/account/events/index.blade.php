@@ -22,7 +22,7 @@
         @foreach ($events as $event)
             <tr>
                 <td>{{ $event->present()->title() }}</td>
-                <td>{{ $event->type->title }}</td>
+                <td>{{ $event->type->label }}</td>
                 <td>{!! $event->present()->status(true) !!}</td>
                 <td>{{ $event->venue->name }}</td>
                 <td>{{ $event->present()->when(true) }}</td>

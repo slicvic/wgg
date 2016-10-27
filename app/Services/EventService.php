@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use InvalidArgumentException;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,7 +43,6 @@ class EventService
             ]);
 
             DB::commit();
-
             return $event;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -74,5 +75,24 @@ class EventService
                 'description' => $data['event']['description']
             ]);
         });
+    }
+
+    /**
+     * Cancel an event.
+     *
+     * @param  Event|int $mixed  Event ID or instance of Event
+     * @throws InvalidArgumentException
+     */
+    public function cancel($mixed)
+    {
+        if (is_int($mixed)) {
+            Event::cancelById($id);
+        }
+
+        if ($mixed instanceof Event) {
+            $event->cancel();
+        }
+
+        throw new InvalidArgumentException('Argument for cancel() must be of type integer or Event.');
     }
 }

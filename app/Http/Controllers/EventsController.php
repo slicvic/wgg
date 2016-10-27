@@ -69,18 +69,20 @@ class EventsController extends BaseController
 
         try {
             $event = $this->eventService->create($input);
-            $this->flashSuccess(sprintf('"%s" was created successfully.', $event->present()->title()));
+
+            $this->flashSuccess(trans('messages.game.created', ['title' => $event->present()->title()]));
+
             return response()->json();
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred, please try again.'], 500);
+            return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
         }
     }
 
     /**
-     * Show form to edit a given event.
+     * Show form to edit an event.
      *
      * @param  Request $request
-     * @param int $id
+     * @param  int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit(Request $request, $id)
@@ -88,11 +90,11 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return $this->redirectBackWithError('Game not found.');
+            return $this->redirectBackWithError(trans('messages.game.not_found'));
         }
 
         if ($event->user_id !== Auth::user()->id) {
-            return $this->redirectBackWithError('Unauthorized.');
+            return $this->redirectBackWithError(trans('messages.game.not_your_own'));
         }
 
         return view('events.edit', ['event' => $event]);
@@ -101,8 +103,8 @@ class EventsController extends BaseController
     /**
      * Update a given event.
      *
-     * @param Request $request
-     * @param int $id
+     * @param  Request $request
+     * @param  int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(StoreEventFormRequest $request, $id)
@@ -110,11 +112,11 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return response()->json(['error' => 'Game not found.'], 404);
+            return response()->json(['error' => trans('messages.game.not_found')], 404);
         }
 
         if ($event->user_id !== Auth::user()->id) {
-            return response()->json(['error' => 'Unauthorized.'], 401);
+            return response()->json(['error' => trans('messages.game.not_your_own')], 401);
         }
 
         $input = $request->only([
@@ -132,11 +134,24 @@ class EventsController extends BaseController
 
         try {
             $this->eventService->update($event, $input);
-            $this->flashSuccess(sprintf('"%s" was updated successfully.', $event->present()->title()));
+
+            $this->flashSuccess(trans('messages.game.updated', ['title' => $event->present()->title()]));
+
             return response()->json();
         } catch(\Exception $e) {
-            return response()->json(['error' => 'An error occurred, please try again.'], 500);
+            return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
         }
+    }
+
+    /**
+     * Search events.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function seach(Request $request)
+    {
+        return response()->json();
     }
 
     /**
@@ -151,15 +166,15 @@ class EventsController extends BaseController
         $event = Event::find($id);
 
         if (!$event) {
-            return $this->redirectBackWithError('Game not found.');
+            return $this->redirectBackWithError(trans('messages.game.not_found'));
         }
 
         if ($event->user_id !== Auth::user()->id) {
-            return $this->redirectBackWithError('Unauthorized.');
+            return $this->redirectBackWithError(trans('messages.game.not_your_own'));
         }
 
-        Event::cancelById($id);
+        $event->cancel();
 
-        return $this->redirectBackWithSuccess(sprintf('"%s" has been canceled.', $event->present()->title()));
+        return $this->redirectBackWithSuccess(trans('messages.game.canceled', ['title' => $event->present()->title()]));
     }
 }

@@ -12,16 +12,16 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::table('social_account_types')->insert([
-            ['name' => 'facebook', 'title' => 'Facebook']
+            ['name' => 'facebook', 'label' => 'Facebook']
         ]);
 
         DB::table('event_types')->insert([
-            ['name' => 'soccer', 'title' => 'Soccer']
+            ['name' => 'soccer', 'label' => 'Soccer']
         ]);
 
         DB::table('event_statuses')->insert([
-            ['name' => 'active', 'title' => 'On'],
-            ['name' => 'canceled', 'title' => 'Canceled']
+            ['name' => 'active', 'label' => 'On'],
+            ['name' => 'canceled', 'label' => 'Canceled']
         ]);
 
         DB::table('users')->insert([

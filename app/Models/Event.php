@@ -101,6 +101,16 @@ class Event extends Model
     }
 
     /**
+     * Cancel the event.
+     *
+     * @return bool
+     */
+    public function cancel()
+    {
+        return static::cancelById($this->id);
+    }
+
+    /**
      * Find all events by user id.
      *
      * @param int $id
