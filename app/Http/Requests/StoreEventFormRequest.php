@@ -63,7 +63,8 @@ class StoreEventFormRequest extends FormRequest
     {
         // Check if venue name was provided but latitude or longitude is missing
         if (!array_key_exists('venue.name', $errors) &&
-            (array_key_exists('venue.latlng.lat', $errors) || array_key_exists('venue.latlng.lng', $errors))) {
+            (array_key_exists('venue.latlng.lat', $errors) || array_key_exists('venue.latlng.lng', $errors))
+        ) {
                 $errors['venue.name'] = 'We didn\'t understand your venue, please select from suggestions that appear when typing.';
         }
 
@@ -71,7 +72,7 @@ class StoreEventFormRequest extends FormRequest
         unset($errors['venue.latlng.lat']);
         unset($errors['venue.latlng.lng']);
 
-        if ($this->expectsJson()) {
+        if (($this->ajax() && ! $this->pjax()) || $this->wantsJson()) {
             return new JsonResponse($errors, 422);
         }
 

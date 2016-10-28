@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreEventFormRequest;
 use App\Models\Event;
 use App\Services\EventService;
+use Illuminate\Support\Facades\DB;
 
 class EventsController extends BaseController
 {
@@ -69,9 +70,7 @@ class EventsController extends BaseController
 
         try {
             $event = $this->eventService->create($input);
-
             $this->flashSuccess(trans('messages.game.created', ['title' => $event->present()->title()]));
-
             return response()->json();
         } catch (\Exception $e) {
             return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
@@ -134,9 +133,7 @@ class EventsController extends BaseController
 
         try {
             $this->eventService->update($event, $input);
-
             $this->flashSuccess(trans('messages.game.updated', ['title' => $event->present()->title()]));
-
             return response()->json();
         } catch(\Exception $e) {
             return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
@@ -144,18 +141,7 @@ class EventsController extends BaseController
     }
 
     /**
-     * Search events.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function seach(Request $request)
-    {
-        return response()->json();
-    }
-
-    /**
-     * Cancel a given event.
+     * Cancel an event.
      *
      * @param Request $request
      * @param int $id
@@ -176,5 +162,16 @@ class EventsController extends BaseController
         $event->cancel();
 
         return $this->redirectBackWithSuccess(trans('messages.game.canceled', ['title' => $event->present()->title()]));
+    }
+
+    /**
+     * Search events.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search(Request $request)
+    {
+        Event::search();
     }
 }

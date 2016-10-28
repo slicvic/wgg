@@ -135,4 +135,23 @@ class Event extends Model
     {
         static::where('id', $id)->update(['status_id' => EventStatus::CANCELED]);
     }
+
+    public static function search(array $criteria = [])
+    {
+        $query = Event::query();
+        $query->whereRaw("
+        GLength(
+                        LineStringFromWKB(
+                          LineString(
+                            ST_GeomFromText('POINT(25.876280 -80.320388)'),
+                            ST_GeomFromText('POINT(25.832912 -80.384716)')
+                            )
+                         )
+                        )*100
+        ");
+
+        dd($query->get());
+
+
+    }
 }
