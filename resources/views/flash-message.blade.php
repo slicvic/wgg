@@ -1,6 +1,6 @@
 @if (Session::has('error'))
     <div class="alert alert-danger">
-        <strong><i class="fa fa-times"></i></strong> {{ Session::get('error') }}
+        <strong><i class="fa fa-times"></i> Whoops!</strong> {{ Session::get('error') }}
     </div>
 @endif
 

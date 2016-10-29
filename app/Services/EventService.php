@@ -9,14 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Event;
 use App\Models\EventVenue;
+use App\Models\EventStatus;
 
 class EventService
 {
     /**
-     * Create new event.
+     * Create a new event.
      *
      * @param array $data
-     * @return Event $event
+     * @return Event
      * @throws Exception
      */
     public function create(array $data)
@@ -24,21 +25,23 @@ class EventService
         DB::beginTransaction();
 
         try {
+            // Create venue
             $venue = EventVenue::create([
                 'name' => $data['venue']['name'],
-                'latlng' => array_values($data['venue']['latlng']),
+                'lat' => $data['venue']['lat'],
+                'lng' => $data['venue']['lng'],
                 'address' => $data['venue']['address'],
                 'url' => $data['venue']['url']
             ]);
 
+            // Create event
             $event = Event::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => $data['event']['user_id'],
                 'type_id' => $data['event']['type_id'],
                 'status_id' => $data['event']['status_id'],
-                'venue_id' => $venue->id,
+                'venue_id' => $venue->id, // Set venue id
                 'title' => $data['event']['title'],
-                'start_at' => date('Y-m-d H:i:s', strtotime($data['event']['start_at'])),
-                'end_at' => date('Y-m-d H:i:s', strtotime($data['event']['start_at']) + ($data['event']['duration'] * 3600)),
+                'start_at' => $data['event']['start_at'],
                 'description' => $data['event']['description']
             ]);
 
@@ -51,48 +54,68 @@ class EventService
     }
 
     /**
-     * Update existing event.
+     * Update an existing event.
      *
      * @param  Event  $event
      * @param  array  $data
+     * @throws Exception
      */
     public function update(Event $event, array $data)
     {
-        DB::transaction(function () use ($event, $data) {
-            $event->venue->update([
-                'name' => $data['venue']['name'],
-                'latlng' => array_values($data['venue']['latlng']),
-                'address' => $data['venue']['address'],
-                'url' => $data['venue']['url']
-            ]);
+        DB::beginTransaction();
 
-            $event->update([
-                'type_id' => $data['event']['type_id'],
-                'status_id' => $data['event']['status_id'],
-                'title' => $data['event']['title'],
-                'start_at' => date('Y-m-d H:i:s', strtotime($data['event']['start_at'])),
-                'end_at' => date('Y-m-d H:i:s', strtotime($data['event']['start_at']) + ($data['event']['duration'] * 3600)),
-                'description' => $data['event']['description']
-            ]);
-        });
+        try {
+            // Update venue
+            if (is_array($data['venue']) && count($data['venue'])) {
+                $event->venue->update($data['venue']);
+            }
+
+            // Update event
+            if (is_array($data['event']) && count($data['event'])) {
+                $event->update($data['event']);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     /**
-     * Cancel an event.
+     * Reschedule an existing event.
      *
-     * @param  Event|int $mixed  Event ID or instance of Event
-     * @throws InvalidArgumentException
+     * @param  Event  $oldEvent
+     * @param  array  $data
+     * @return Event
+     * @throws Exception
      */
-    public function cancel($mixed)
+    public function reschedule(Event $oldEvent, array $data)
     {
-        if (is_int($mixed)) {
-            Event::cancelById($id);
-        }
+        DB::beginTransaction();
 
-        if ($mixed instanceof Event) {
-            $event->cancel();
-        }
+        try {
+            // Recreate venue
+            $newVenue = $oldEvent->venue->replicate();
+            if (is_array($data['venue']) && count($data['venue'])) {
+                $newVenue->fill($data['venue']);
+            }
+            $newVenue->save();
 
-        throw new InvalidArgumentException('Argument for cancel() must be of type integer or Event.');
+            // Recreate event
+            $newEvent = $oldEvent->replicate();
+            if (is_array($data['event']) && count($data['event'])) {
+                $newEvent->fill($data['event']);
+            }
+            $newEvent->status_id = EventStatus::ACTIVE;
+            $newEvent->venue_id = $newVenue->id;
+            $newEvent->save();
+
+            DB::commit();
+            return $newEvent;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

@@ -20,7 +20,7 @@ class User extends Authenticatable
     protected $presenterClassName = 'App\Presenters\UserPresenter';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $fillable = [
         'social_account_id',

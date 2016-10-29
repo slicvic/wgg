@@ -1,18 +1,21 @@
 <?php
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\AuthorizationException;
 
 use App\Http\Requests\StoreEventFormRequest;
-use App\Models\Event;
 use App\Services\EventService;
-use Illuminate\Support\Facades\DB;
+use App\Models\Event;
+use App\Models\EventStatus;
 
 class EventsController extends BaseController
 {
     /**
-     * An instance of event service.
+     * Instance of event service.
      *
      * @var EventService
      */
@@ -25,26 +28,24 @@ class EventsController extends BaseController
      */
     public function __construct(EventService $eventService)
     {
-        $this->middleware('auth')->only([
-            'create',
-            'store',
-            'edit',
-            'update',
-            'cancel'
+        $this->middleware('auth')->except([
+            'search'
         ]);
 
         $this->eventService = $eventService;
     }
 
     /**
-     * Show form to create a new event.
+     * Show the form for creating a new event.
      *
      * @param  Request $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function getCreate(Request $request)
     {
-        return view('events.create', ['event' => new Event]);
+        $event = new Event;
+
+        return view('events.create', compact('event'));
     }
 
     /**
@@ -53,95 +54,140 @@ class EventsController extends BaseController
      * @param  StoreEventFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreEventFormRequest $request)
+    public function postCreate(StoreEventFormRequest $request)
     {
         $input = $request->only([
             'event.title',
             'event.type_id',
-            'event.status_id',
             'event.start_at',
-            'event.duration',
             'event.description',
             'venue.name',
-            'venue.latlng',
+            'venue.lat',
+            'venue.lng',
             'venue.address',
             'venue.url'
         ]);
 
+        $input['event']['user_id'] = Auth::user()->id;
+        $input['event']['status_id'] = EventStatus::ACTIVE;
+
         try {
             $event = $this->eventService->create($input);
-            $this->flashSuccess(trans('messages.game.created', ['title' => $event->present()->title()]));
+            $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
             return response()->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
         }
     }
 
     /**
-     * Show form to edit an event.
+     * Show the form for editing an existing event.
      *
      * @param  Request $request
      * @param  int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function edit(Request $request, $id)
+    public function getEdit(Request $request, $id)
     {
         $event = Event::find($id);
+        $this->authorize('update', $event);
 
-        if (!$event) {
-            return $this->redirectBackWithError(trans('messages.game.not_found'));
-        }
-
-        if ($event->user_id !== Auth::user()->id) {
-            return $this->redirectBackWithError(trans('messages.game.not_your_own'));
-        }
-
-        return view('events.edit', ['event' => $event]);
+        return view('events.edit', compact('event'));
     }
 
     /**
-     * Update a given event.
+     * Update the given event.
      *
      * @param  Request $request
      * @param  int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(StoreEventFormRequest $request, $id)
+    public function postEdit(StoreEventFormRequest $request, $id)
     {
-        $event = Event::find($id);
-
-        if (!$event) {
-            return response()->json(['error' => trans('messages.game.not_found')], 404);
-        }
-
-        if ($event->user_id !== Auth::user()->id) {
-            return response()->json(['error' => trans('messages.game.not_your_own')], 401);
-        }
-
-        $input = $request->only([
-            'event.title',
-            'event.type_id',
-            'event.status_id',
-            'event.start_at',
-            'event.duration',
-            'event.description',
-            'venue.name',
-            'venue.latlng',
-            'venue.address',
-            'venue.url'
-        ]);
-
         try {
+            $event = Event::find($id);
+
+            $this->authorize('update', $event);
+
+            $input = $request->only([
+                'event.title',
+                'event.type_id',
+                'event.start_at',
+                'event.description',
+                'venue.name',
+                'venue.lat',
+                'venue.lng',
+                'venue.address',
+                'venue.url'
+            ]);
+
             $this->eventService->update($event, $input);
-            $this->flashSuccess(trans('messages.game.updated', ['title' => $event->present()->title()]));
+
+            $this->flashSuccess(trans('messages.event.updated', ['title' => $event->present()->title()]));
+
             return response()->json();
-        } catch(\Exception $e) {
+        } catch (AuthorizationException $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        } catch (Exception $e) {
             return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
         }
     }
 
     /**
-     * Cancel an event.
+     * Show the form for rescheduling an event.
+     *
+     * @param  Request $request
+     * @param  int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function getReschedule(Request $request, $id)
+    {
+        $event = Event::find($id);
+        $this->authorize('reschedule', $event);
+
+        return view('events.create', compact('event'));
+    }
+
+    /**
+     * Reschedule the given event.
+     *
+     * @param  Request $request
+     * @param  int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function postReschedule(StoreEventFormRequest $request, $id)
+    {
+        try {
+            $event = Event::find($id);
+
+            $this->authorize('reschedule', $event);
+
+            $input = $request->only([
+                'event.title',
+                'event.type_id',
+                'event.start_at',
+                'event.description',
+                'venue.name',
+                'venue.lat',
+                'venue.lng',
+                'venue.address',
+                'venue.url'
+            ]);
+
+            $this->eventService->reschedule($event, $input);
+
+            $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
+
+            return response()->json();
+        } catch (AuthorizationException $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        } catch (Exception $e) {
+            return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
+        }
+    }
+
+    /**
+     * Cancel the given event.
      *
      * @param Request $request
      * @param int $id
@@ -150,18 +196,10 @@ class EventsController extends BaseController
     public function cancel(Request $request, $id)
     {
         $event = Event::find($id);
-
-        if (!$event) {
-            return $this->redirectBackWithError(trans('messages.game.not_found'));
-        }
-
-        if ($event->user_id !== Auth::user()->id) {
-            return $this->redirectBackWithError(trans('messages.game.not_your_own'));
-        }
-
+        $this->authorize('update', $event);
         $event->cancel();
 
-        return $this->redirectBackWithSuccess(trans('messages.game.canceled', ['title' => $event->present()->title()]));
+        return $this->redirectBackWithSuccess(trans('messages.event.canceled', ['title' => $event->present()->title()]));
     }
 
     /**

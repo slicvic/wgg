@@ -27,12 +27,10 @@ class StoreEventFormRequest extends FormRequest
         return [
             'event.title' => 'required',
             'event.type_id' => 'required',
-            'event.status_id' => 'required',
             'event.start_at' => 'required',
-            'event.duration' => 'required',
             'venue.name' => 'required',
-            'venue.latlng.lat' => 'required',
-            'venue.latlng.lng' => 'required'
+            'venue.lat' => 'required',
+            'venue.lng' => 'required'
         ];
     }
 
@@ -44,12 +42,10 @@ class StoreEventFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'event.title.required' => 'The title cannot be empty.',
-            'event.type_id.required' => 'The sport cannot be empty.',
-            'event.status_id.required' => 'The status cannot be empty.',
-            'event.start_at.required' => 'The date and time cannot be empty.',
-            'event.duration.required' => 'The duration cannot be empty.',
-            'venue.name.required' => 'The venue cannot be empty.'
+            'event.title.required' => 'The title cannot be blank.',
+            'event.type_id.required' => 'The type cannot be blank.',
+            'event.start_at.required' => 'The date and time cannot be blank.',
+            'venue.name.required' => 'The location cannot be blank.'
         ];
     }
 
@@ -63,14 +59,14 @@ class StoreEventFormRequest extends FormRequest
     {
         // Check if venue name was provided but latitude or longitude is missing
         if (!array_key_exists('venue.name', $errors) &&
-            (array_key_exists('venue.latlng.lat', $errors) || array_key_exists('venue.latlng.lng', $errors))
+            (array_key_exists('venue.lat', $errors) || array_key_exists('venue.lng', $errors))
         ) {
-                $errors['venue.name'] = 'We didn\'t understand your venue, please select from suggestions that appear when typing.';
+                $errors['venue.name'] = 'We didn\'t understand the location, please select from suggestions that appear when typing.';
         }
 
         // Don't wanna show these errors
-        unset($errors['venue.latlng.lat']);
-        unset($errors['venue.latlng.lng']);
+        unset($errors['venue.lat']);
+        unset($errors['venue.lng']);
 
         if (($this->ajax() && ! $this->pjax()) || $this->wantsJson()) {
             return new JsonResponse($errors, 422);

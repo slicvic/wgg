@@ -10,7 +10,7 @@ class HomeController extends BaseController
 {
     /**
      * Show the home page.
-     * 
+     *
      * @param  Request $request
      * @return \Illuminate\View\View
      */

@@ -14,7 +14,6 @@
             <th>Status</th>
             <th>Where</th>
             <th>When</th>
-            <th>Duration</th>
             <th></th>
         </tr>
     </thead>
@@ -25,11 +24,12 @@
                 <td>{{ $event->type->label }}</td>
                 <td>{!! $event->present()->status(true) !!}</td>
                 <td>{{ $event->venue->name }}</td>
-                <td>{{ $event->present()->when(true) }}</td>
-                <td>{{ $event->present()->duration() }}</td>
+                <td>{{ $event->present()->when('long') }}</td>
                 <td>
-                    <a href="{{ route('events.edit', ['id' => $event->id]) }}" class="btn btn-primary">Edit</a>
-                    @if ($event->isActive() && !$event->hasPassed())
+                    @if ($event->isCanceled() || $event->hasPassed())
+                        <a href="{{ route('events.getReschedule', ['id' => $event->id]) }}" class="btn btn-primary">Reschedule</a>
+                    @else
+                        <a href="{{ route('events.getEdit', ['id' => $event->id]) }}" class="btn btn-primary">Edit</a>
                         <a href="{{ route('events.cancel', ['id' => $event->id]) }}"
                             class="btn btn-danger"
                             v-on:click="cancelEvent">Cancel</a>
@@ -41,6 +41,6 @@
 </table>
 @else
 <hr>
-<p>You have not created any games.</p>
+<p>Looks like you have not created any games.</p>
 @endif
 @endsection

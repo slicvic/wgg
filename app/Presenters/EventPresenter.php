@@ -19,12 +19,20 @@ class EventPresenter extends BasePresenter
     /**
      * Present start date time.
      *
-     * @param bool $verbose
+     * @param string $format
      * @return string
      */
-    public function when($verbose = false)
+    public function when($format = 'short')
     {
-        $format = ($verbose) ? 'l, M j, Y g:i A' : 'm/d/Y g:i A';
+        switch ($format) {
+            case 'short':
+                $format = 'm/d/Y g:i A';
+                break;
+            case 'medium':
+            case 'long':
+                $format = 'l, M j, Y g:i A';
+                break;
+        }
 
         return date($format, strtotime($this->model->start_at));
     }
@@ -48,17 +56,5 @@ class EventPresenter extends BasePresenter
             default:
                 return ($asTag) ? '<span class="tag tag-danger">Canceled</span>' : 'Canceled';
         }
-    }
-
-    /**
-     * Present duration in hours.
-     *
-     * @return int
-     */
-    public function duration()
-    {
-        $duration = $this->model->calculateDuration();
-        $duration .= ($duration > 1) ? ' hours' : ' hour';
-        return $duration;
     }
 }

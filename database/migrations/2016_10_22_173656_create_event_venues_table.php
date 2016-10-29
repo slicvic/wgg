@@ -18,10 +18,12 @@ class CreateEventVenuesTable extends Migration
             $table->string('name', 255)->default('');
             $table->string('address', 255)->default('');
             $table->string('url', 255)->default('');
+            $table->decimal('lat', 10, 8);
+            $table->decimal('lng', 11, 8);
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE event_venues ADD COLUMN latlng POINT AFTER address');
+        //DB::statement('ALTER TABLE event_venues ADD COLUMN latlng POINT AFTER address');
     }
 
     /**

@@ -2,13 +2,16 @@
 
 return [
     'system' => [
-        'something_went_wrong' => 'Something went wrong, please try again.'
+        'something_went_wrong' => 'Looks like something went wrong, please try again.'
     ],
-    'game' => [
-        'not_found' => 'Sorry, we couldn\'t find that game.',
-        'not_your_own' => 'Sorry, that game is not your own.',
-        'created' => '":title" has been created.',
-        'updated' => '":title" has been updated.',
-        'canceled' => '":title" has been canceled.'
+    'event' => [
+        'not_found' => 'We couldn\'t find that game.',
+        'not_your_own' => 'That game is not your own.',
+        'created' => 'Created new game ":title".',
+        'updated' => 'Updated game ":title".',
+        'canceled' => 'Canceled game ":title".',
+        'cannot_edit_canceled' => 'You cannot edit a canceled game.',
+        'cannot_edit_past' => 'You cannot edit a past game.',
+        'cannot_reschedule_active' => 'You cannot reschedule an active game.'
     ]
 ];

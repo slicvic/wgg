@@ -13,7 +13,6 @@ class UserProfile extends BaseController
      */
     public function index(Request $request, $id)
     {
-        // TODO
         return view('home.index');
     }
 }

@@ -3,20 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Presenters\PresentableTrait;
 
 class Event extends Model
 {
-    use PresentableTrait;
+    use SoftDeletes, PresentableTrait;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $presenterClassName = 'App\Presenters\EventPresenter';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $fillable = [
         'title',
@@ -25,16 +26,15 @@ class Event extends Model
         'type_id',
         'venue_id',
         'status_id',
-        'start_at',
-        'end_at'
+        'start_at'
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $dates = [
         'start_at',
-        'end_at'
+        'deleted_at'
     ];
 
     /**
@@ -68,13 +68,13 @@ class Event extends Model
     }
 
     /**
-     * Check if the event is active.
+     * Check if the event is canceled.
      *
      * @return bool
      */
-    public function isActive()
+    public function isCanceled()
     {
-        return ($this->status_id == EventStatus::ACTIVE);
+        return ($this->status_id == EventStatus::CANCELED);
     }
 
     /**
@@ -84,20 +84,22 @@ class Event extends Model
      */
     public function hasPassed()
     {
+        // Check if more than X hours have passed since the game started
+        $maxHoursPassed = 8;
         $now = time();
-        $ending = strtotime($this->end_at);
-
-        return ($now > $ending);
+        $start = strtotime($this->start_at);
+        return (($now - $start) > (3600 * $maxHoursPassed));
     }
 
     /**
-     * Calculate the duration in hours.
+     * Check if the given user is the organizer.
      *
-     * @return int
+     * @param int $user
+     * @return bool
      */
-    public function calculateDuration()
+    public function isOrganizer(\App\Models\User $user)
     {
-        return (strtotime($this->end_at) - strtotime($this->start_at)) / 3600;
+        return ($this->user_id === $user->id);
     }
 
     /**
@@ -107,7 +109,18 @@ class Event extends Model
      */
     public function cancel()
     {
-        return static::cancelById($this->id);
+        $this->status_id = EventStatus::CANCELED;
+        return $this->save();
+    }
+
+    /**
+     * Set start at attribute.
+     *
+     * @param string $value
+     */
+    public function setStartAtAttribute($value)
+    {
+        $this->attributes['start_at'] = date('Y-m-d H:i:s', strtotime($value));
     }
 
     /**
@@ -127,31 +140,43 @@ class Event extends Model
     }
 
     /**
-     * Cancel event by id.
+     * Find all events by given criteria.
      *
-     * @param int $id
+     * @param  array $criteria [description]
+     * @return Event[]
      */
-    public static function cancelById($id)
-    {
-        static::where('id', $id)->update(['status_id' => EventStatus::CANCELED]);
-    }
-
     public static function search(array $criteria = [])
     {
         $query = Event::query();
-        $query->whereRaw("
-        GLength(
-                        LineStringFromWKB(
-                          LineString(
-                            ST_GeomFromText('POINT(25.876280 -80.320388)'),
-                            ST_GeomFromText('POINT(25.832912 -80.384716)')
-                            )
-                         )
-                        )*100
-        ");
 
-        dd($query->get());
+        if (!empty($criteria['type_id'])) {
+            $query->where('type_id', $criteria['type_id']);
+        }
 
+        if (!empty($criteria['status_id'])) {
+            $query->where('status_id', $criteria['status_id']);
+        }
+
+        $criteria['within_miles'] = 10000;
+        $criteria['lat'] = '25.844725';
+        $criteria['lng'] = '-80.179466';
+
+        if (!(empty($criteria['within_miles']) && empty($criteria['lat']) && empty($criteria['lng']))) {
+            // Multiply by 6371 (earth's radius in KM) to get distance in KM
+            // Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
+            $query->selectRaw('
+                    (
+                        ACOS(
+                            COS(RADIANS(?)) * COS(RADIANS(event_venues.lat)) *
+                            COS(RADIANS(event_venues.lng) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(event_venues.lat))
+                        ) * 6371 * 0.621371
+                    ) AS computed_distance
+                ', [$criteria['lat'], $criteria['lng'], $criteria['lat']])
+                ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
+                ->having('computed_distance', '<=', $criteria['within_miles']);
+        }
+
+        dd($query->get()[0]->computed_distance);
 
     }
 }

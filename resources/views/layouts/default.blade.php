@@ -39,7 +39,7 @@
                                 <img class="rounded" src="{{ Auth::user()->present()->profilePictureUrl(20, 20) }}"> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('account.events.index') }}"><i class="fa fa-futbol-o"></i> Manage Games</a></li>
+                                <li><a class="dropdown-item" href="{{ route('account.events.index') }}"><i class="fa fa-futbol-o"></i> Manage games</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}"><i class="fa fa-sign-out"></i> Logout</a></li>
                             </ul>
@@ -84,7 +84,7 @@
                         events: '{{ route('account.events.index') }}'
                     },
                     events: {
-                        create: '{{ route('events.create') }}',
+                        create: '{{ route('events.getCreate') }}',
                         search: '{{ route('events.search') }}'
                     }
                 },

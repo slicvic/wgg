@@ -27,6 +27,6 @@ class EventsController extends BaseController
     {
         $events = Event::findAllByUserId(Auth::user()->id);
 
-        return view('account.events.index', ['events' => $events]);
+        return view('account.events.index', compact('events'));
     }
 }
