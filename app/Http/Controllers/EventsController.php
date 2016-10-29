@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use App\Http\Requests\StoreEventFormRequest;
 use App\Services\EventService;
@@ -89,7 +90,9 @@ class EventsController extends BaseController
      */
     public function getEdit(Request $request, $id)
     {
-        $event = Event::find($id);
+        $event = Event::findOrFail($id);
+
+        // Check if the user is allowed to edit this event
         $this->authorize('update', $event);
 
         return view('events.edit', compact('event'));
@@ -105,8 +108,9 @@ class EventsController extends BaseController
     public function postEdit(StoreEventFormRequest $request, $id)
     {
         try {
-            $event = Event::find($id);
+            $event = Event::findOrFail($id);
 
+            // Check if the user is allowed to edit this event
             $this->authorize('update', $event);
 
             $input = $request->only([
@@ -126,6 +130,8 @@ class EventsController extends BaseController
             $this->flashSuccess(trans('messages.event.updated', ['title' => $event->present()->title()]));
 
             return response()->json();
+        } catch (NotFoundHttpException $e) {
+            return response()->json(['error' => trans('messages.event.not_found')], 404);
         } catch (AuthorizationException $e) {
             return response()->json(['error' => $e->getMessage()], 401);
         } catch (Exception $e) {
@@ -142,7 +148,9 @@ class EventsController extends BaseController
      */
     public function getReschedule(Request $request, $id)
     {
-        $event = Event::find($id);
+        $event = Event::findOrFail($id);
+
+        // Check if the user is allowed to reschedule this event
         $this->authorize('reschedule', $event);
 
         return view('events.create', compact('event'));
@@ -158,8 +166,9 @@ class EventsController extends BaseController
     public function postReschedule(StoreEventFormRequest $request, $id)
     {
         try {
-            $event = Event::find($id);
+            $event = Event::findOrFail($id);
 
+            // Check if the user is allowed to reschedule this event
             $this->authorize('reschedule', $event);
 
             $input = $request->only([
@@ -179,6 +188,8 @@ class EventsController extends BaseController
             $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
 
             return response()->json();
+        } catch (NotFoundHttpException $e) {
+            return response()->json(['error' => trans('messages.event.not_found')], 404);
         } catch (AuthorizationException $e) {
             return response()->json(['error' => $e->getMessage()], 401);
         } catch (Exception $e) {
@@ -195,8 +206,12 @@ class EventsController extends BaseController
      */
     public function cancel(Request $request, $id)
     {
-        $event = Event::find($id);
+        $event = Event::findOrFail($id);
+
+        // Check if the user is allowed to cancel this event
         $this->authorize('update', $event);
+
+        // Cancel the event
         $event->cancel();
 
         return $this->redirectBackWithSuccess(trans('messages.event.canceled', ['title' => $event->present()->title()]));

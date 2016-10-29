@@ -85,10 +85,11 @@ class Event extends Model
     public function hasPassed()
     {
         // Check if more than X hours have passed since the game started
-        $maxHoursPassed = 8;
+        $hoursPassed = 8;
         $now = time();
         $start = strtotime($this->start_at);
-        return (($now - $start) > (3600 * $maxHoursPassed));
+
+        return (($now - $start) > (3600 * $hoursPassed));
     }
 
     /**
@@ -124,7 +125,7 @@ class Event extends Model
     }
 
     /**
-     * Find all events by user id.
+     * Find all events by the given user id.
      *
      * @param int $id
      * @return Event[]
@@ -133,14 +134,14 @@ class Event extends Model
     {
         $events = static::where(['user_id' => $id])
                 ->orderBy('status_id', 'ASC')
-                ->orderBy('start_at', 'DESC')
+                ->orderBy('start_at', 'ASC')
                 ->get();
 
         return $events;
     }
 
     /**
-     * Find all events by given criteria.
+     * Find all events by the given criteria.
      *
      * @param  array $criteria [description]
      * @return Event[]
@@ -148,6 +149,7 @@ class Event extends Model
     public static function search(array $criteria = [])
     {
         $query = Event::query();
+        $query->orderBy('start_at', 'ASC');
 
         if (!empty($criteria['type_id'])) {
             $query->where('type_id', $criteria['type_id']);
@@ -157,26 +159,27 @@ class Event extends Model
             $query->where('status_id', $criteria['status_id']);
         }
 
-        $criteria['within_miles'] = 10000;
-        $criteria['lat'] = '25.844725';
-        $criteria['lng'] = '-80.179466';
+        //$criteria['within_miles'] = 10000;
+        //$criteria['lat'] = '25.844725';
+        //$criteria['lng'] = '-80.179466';
 
         if (!(empty($criteria['within_miles']) && empty($criteria['lat']) && empty($criteria['lng']))) {
             // Multiply by 6371 (earth's radius in KM) to get distance in KM
             // Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
             $query->selectRaw('
-                    (
-                        ACOS(
-                            COS(RADIANS(?)) * COS(RADIANS(event_venues.lat)) *
-                            COS(RADIANS(event_venues.lng) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(event_venues.lat))
-                        ) * 6371 * 0.621371
-                    ) AS computed_distance
-                ', [$criteria['lat'], $criteria['lng'], $criteria['lat']])
-                ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
-                ->having('computed_distance', '<=', $criteria['within_miles']);
+                (
+                    ACOS(
+                        COS(RADIANS(?)) * COS(RADIANS(event_venues.lat)) *
+                        COS(RADIANS(event_venues.lng) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(event_venues.lat))
+                    ) * 6371 * 0.621371
+                ) AS computed_distance
+            ', [$criteria['lat'], $criteria['lng'], $criteria['lat']])
+            ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
+            ->having('computed_distance', '<=', $criteria['within_miles']);
         }
 
-        dd($query->get()[0]->computed_distance);
+        $result = $query->get();
 
+        return $result;
     }
 }
