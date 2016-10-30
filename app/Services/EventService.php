@@ -5,7 +5,6 @@ namespace App\Services;
 use InvalidArgumentException;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 use App\Models\Event;
 use App\Models\EventVenue;
@@ -38,7 +37,7 @@ class EventService
             $event = Event::create([
                 'user_id' => $data['event']['user_id'],
                 'type_id' => $data['event']['type_id'],
-                'status_id' => $data['event']['status_id'],
+                'status_id' => (empty($data['event']['status_id'])) ? EventStatus::ACTIVE : $data['event']['status_id'],
                 'venue_id' => $venue->id, // Set venue id
                 'title' => $data['event']['title'],
                 'start_at' => $data['event']['start_at'],

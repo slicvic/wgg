@@ -34,7 +34,7 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
 
         // Events -- Create/Edit Form
         viewModels.events = {};
-        viewModels.events.createEditForm = new Vue({
+        viewModels.events.form = new Vue({
             el: '#events--create-edit-form',
             data: {
                 errors: '',
@@ -78,21 +78,23 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
             e.preventDefault();
             var form = $(this);
 
-            viewModels.events.createEditForm.submitted = true;
+            viewModels.events.form.submitted = true;
 
             $.post(form.attr('action'), form.serialize())
                 .done(function(response) {
                     window.location = globalSettings.routes.account.events;
                 }).fail(function(response) {
                     if (response.responseJSON.error) {
-                        toastr.error(response.responseJSON.error, 'Whoops!');
-                    } else if (response.responseJSON.errors) {
-                        viewModels.events.createEditForm.errors = response.responseJSON.errors.html;
+                        if (response.responseJSON.error.message_format === 'html') {
+                            viewModels.events.form.errors = response.responseJSON.error.message;
+                        } else {
+                            toastr.error(response.responseJSON.error.message, 'Whoops!');
+                        }
                     } else {
-                        toastr.error('Something went wrong, please try again', 'Whoops!');
+                        toastr.error('Looks like Something went wrong, please try again.', 'Whoops!');
                     }
                 }).always(function() {
-                    viewModels.events.createEditForm.submitted = false;
+                    viewModels.events.form.submitted = false;
                 });
         });
 

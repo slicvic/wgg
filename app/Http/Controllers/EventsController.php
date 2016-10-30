@@ -1,12 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Auth\Access\AuthorizationException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use App\Http\Requests\StoreEventFormRequest;
 use App\Services\EventService;
@@ -70,15 +67,12 @@ class EventsController extends BaseController
         ]);
 
         $input['event']['user_id'] = Auth::user()->id;
-        $input['event']['status_id'] = EventStatus::ACTIVE;
 
-        try {
-            $event = $this->eventService->create($input);
-            $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
-            return response()->json();
-        } catch (Exception $e) {
-            return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
-        }
+        $event = $this->eventService->create($input);
+
+        $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
+
+        return response()->json();
     }
 
     /**
@@ -107,36 +101,28 @@ class EventsController extends BaseController
      */
     public function postEdit(StoreEventFormRequest $request, $id)
     {
-        try {
-            $event = Event::findOrFail($id);
+        $event = Event::findOrFail($id);
 
-            // Check if the user is allowed to edit this event
-            $this->authorize('update', $event);
+        // Check if the user is allowed to edit this event
+        $this->authorize('update', $event);
 
-            $input = $request->only([
-                'event.title',
-                'event.type_id',
-                'event.start_at',
-                'event.description',
-                'venue.name',
-                'venue.lat',
-                'venue.lng',
-                'venue.address',
-                'venue.url'
-            ]);
+        $input = $request->only([
+            'event.title',
+            'event.type_id',
+            'event.start_at',
+            'event.description',
+            'venue.name',
+            'venue.lat',
+            'venue.lng',
+            'venue.address',
+            'venue.url'
+        ]);
 
-            $this->eventService->update($event, $input);
+        $this->eventService->update($event, $input);
 
-            $this->flashSuccess(trans('messages.event.updated', ['title' => $event->present()->title()]));
+        $this->flashSuccess(trans('messages.event.updated', ['title' => $event->present()->title()]));
 
-            return response()->json();
-        } catch (NotFoundHttpException $e) {
-            return response()->json(['error' => trans('messages.event.not_found')], 404);
-        } catch (AuthorizationException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        } catch (Exception $e) {
-            return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
-        }
+        return response()->json();
     }
 
     /**
@@ -165,36 +151,28 @@ class EventsController extends BaseController
      */
     public function postReschedule(StoreEventFormRequest $request, $id)
     {
-        try {
-            $event = Event::findOrFail($id);
+        $event = Event::findOrFail($id);
 
-            // Check if the user is allowed to reschedule this event
-            $this->authorize('reschedule', $event);
+        // Check if the user is allowed to reschedule this event
+        $this->authorize('reschedule', $event);
 
-            $input = $request->only([
-                'event.title',
-                'event.type_id',
-                'event.start_at',
-                'event.description',
-                'venue.name',
-                'venue.lat',
-                'venue.lng',
-                'venue.address',
-                'venue.url'
-            ]);
+        $input = $request->only([
+            'event.title',
+            'event.type_id',
+            'event.start_at',
+            'event.description',
+            'venue.name',
+            'venue.lat',
+            'venue.lng',
+            'venue.address',
+            'venue.url'
+        ]);
 
-            $this->eventService->reschedule($event, $input);
+        $this->eventService->reschedule($event, $input);
 
-            $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
+        $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
 
-            return response()->json();
-        } catch (NotFoundHttpException $e) {
-            return response()->json(['error' => trans('messages.event.not_found')], 404);
-        } catch (AuthorizationException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        } catch (Exception $e) {
-            return response()->json(['error' => trans('messages.system.something_went_wrong')], 500);
-        }
+        return response()->json();
     }
 
     /**
