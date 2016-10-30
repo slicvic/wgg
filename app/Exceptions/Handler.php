@@ -78,32 +78,32 @@ class Handler extends ExceptionHandler
     {
         $data = [
             'error' => [
+                'status' => '',
                 'message_format' => 'text',
                 'message' => ''
             ]
         ];
 
-        switch (get_class($exception)) {
-            case \Illuminate\Validation\ValidationException::class:
-                $status = 422;
-                $data['error']['message_format'] = 'html';
-                $data['error']['message'] = view('flash-message')
-                    ->withErrors($exception->getResponse()->getData())
-                    ->render();
-                break;
-            case \Illuminate\Auth\Access\AuthorizationException::class:
-                $status = 403;
-                $data['error']['message'] = $exception->getMessage();
-                break;
-            case \Illuminate\Database\Eloquent\ModelNotFoundException::class:
-                $status = 404;
-                $data['error']['message'] = trans('messages.system.not_found');
-                break;
-            default:
-                $status = 500;
-                $data['error']['message'] = trans('messages.system.something_went_wrong');
+        if ($exception instanceof \Illuminate\Validation\ValidationException) {
+            $data['error']['status'] = 422;
+            $data['error']['message_format'] = 'html';
+            $data['error']['message'] = view('flash-message')
+                ->withErrors($exception->getResponse()->getData())
+                ->render();
+        }
+        else if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            $data['error']['status'] = 403;
+            $data['error']['message'] = $exception->getMessage();
+        }
+        else if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            $data['error']['status'] = 404;
+            $data['error']['message'] = trans('messages.system.not_found');
+        }
+        else {
+            $data['error']['status'] = 500;
+            $data['error']['message'] = trans('messages.system.something_went_wrong');
         }
 
-        return response()->json($data, $status);
+        return response()->json($data, $data['error']['status']);
     }
 }

@@ -1,6 +1,6 @@
 @if (Session::has('error'))
     <div class="alert alert-danger">
-        <strong><i class="fa fa-times"></i> Whoops!</strong> {{ Session::get('error') }}
+        <strong><i class="fa fa-times"></i></strong> {{ Session::get('error') }}
     </div>
 @endif
 
@@ -10,9 +10,8 @@
     </div>
 @endif
 
-@if ($errors && $errors instanceof \Illuminate\Support\MessageBag && count($errors) > 0)
+@if ($errors && count($errors) && $errors instanceof \Illuminate\Support\MessageBag)
     <div class="alert alert-danger">
-        <strong><i class="fa fa-times"></i> Whoops!</strong>
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
