@@ -1,10 +1,13 @@
 <?php
-    if ('events.getEdit' === Route::currentRouteName()) {
-        $formAction = route('events.postEdit', ['id' => $event->id]);
-    } else if ('events.getReschedule' === Route::currentRouteName()) {
-        $formAction = route('events.postReschedule', ['id' => $event->id]);
-    } else {
-        $formAction = route('events.postCreate');
+    switch (Route::currentRouteName()) {
+        case 'events.getEdit':
+            $formAction = route('events.postEdit', ['id' => $event->id]);
+            break;
+        case 'events.getReschedule':
+            $formAction = route('events.postReschedule', ['id' => $event->id]);
+            break;
+        default:
+            $formAction = route('events.postCreate');
     }
  ?>
 <form action="{{ $formAction }}" method="post" id="events--create-edit-form" class="js-validate-form">

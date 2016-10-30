@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Account;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use App\Http\Controllers\BaseController;
 use App\Models\Event;
 

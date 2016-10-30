@@ -7,7 +7,7 @@ use App\Models\EventStatus;
 class EventPresenter extends BasePresenter
 {
     /**
-     * Present title.
+     * Present the title.
      *
      * @return string
      */
@@ -17,7 +17,7 @@ class EventPresenter extends BasePresenter
     }
 
     /**
-     * Present start date time.
+     * Present the start date and time.
      *
      * @param string $format
      * @return string
@@ -38,7 +38,7 @@ class EventPresenter extends BasePresenter
     }
 
     /**
-     * Present status as plain text or bootstrap tag.
+     * Present the status as plain text or bootstrap tag.
      *
      * @param bool $asTag
      * @return string
@@ -50,9 +50,7 @@ class EventPresenter extends BasePresenter
                 if ($this->model->hasPassed()) {
                     return ($asTag) ? '<span class="tag tag-warning">Passed</span>' : 'Passed';
                 }
-
                 return ($asTag) ? '<span class="tag tag-success">On</span>' : 'On';
-
             default:
                 return ($asTag) ? '<span class="tag tag-danger">Canceled</span>' : 'Canceled';
         }

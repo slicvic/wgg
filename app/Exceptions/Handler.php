@@ -97,11 +97,11 @@ class Handler extends ExceptionHandler
         }
         else if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
             $data['error']['status'] = 404;
-            $data['error']['message'] = trans('messages.system.not_found');
+            $data['error']['message'] = trans('messages.system.404');
         }
         else {
             $data['error']['status'] = 500;
-            $data['error']['message'] = trans('messages.system.something_went_wrong');
+            $data['error']['message'] = trans('messages.system.500');
         }
 
         return response()->json($data, $data['error']['status']);

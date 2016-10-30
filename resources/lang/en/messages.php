@@ -2,8 +2,13 @@
 
 return [
     'system' => [
-        'something_went_wrong' => 'Looks like something went wrong, please try again.',
-        'not_found' => 'We couldn\'t find that resource.'
+        '500' => 'Looks like something went wrong, please try again.',
+        '400' => 'We couldn\'t find that resource.',
+        'login' => [
+            'error' => [
+                'facebook' => 'There was a problem logging you in with Facebook, please try again. (Error: :error)',
+            ]
+        ]
     ],
     'event' => [
         'not_your_own' => 'That game is not your own.',

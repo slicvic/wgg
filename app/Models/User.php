@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-use App\Models\SocialAccountType;
 use App\Presenters\PresentableTrait;
 
 class User extends Authenticatable
@@ -71,7 +69,7 @@ class User extends Authenticatable
      * @param  int $socialAccountTypeId
      * @return User|null
      */
-    public static function findBySocialAccountIdAndSocialAccountTypeId($socialAccountId, $socialAccountTypeId)
+    public static function findOneBySocialAccountIdAndSocialAccountTypeId($socialAccountId, $socialAccountTypeId)
     {
         return static::where('social_account_id', $socialAccountId)
                     ->where('social_account_type_id', $socialAccountTypeId)

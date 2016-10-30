@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Facebook\Facebook;
-
 use App\Models\Event;
 
 class HomeController extends BaseController

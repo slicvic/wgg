@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use Illuminate\Auth\Access\AuthorizationException;
-
 use App\Models\User;
 use App\Models\Event;
 

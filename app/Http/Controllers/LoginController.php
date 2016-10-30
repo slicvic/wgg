@@ -3,10 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-
 use App\Exceptions\AccountDeactivatedException;
 use App\Services\RegistrarService;
 
@@ -48,23 +46,23 @@ class LoginController extends BaseController
     public function facebook(Request $request)
     {
         try {
-            // Create/update user
+            // Create new user or update existing
             $user = $this->registrarService->facebook();
 
-            // Log user in
+            // Log the user in
             Auth::loginUsingId($user->id);
 
-            if ($redirectUrl = $request->query('success_redirect')) {
+            if ($redirectUrl = $request->query('redirect')) {
                 return redirect($redirectUrl);
             }
-        } catch(FacebookResponseException $e) {
-            $this->flashError(sprintf('A Facebook login error occurred. %s Please try again.', $e->getMessage()));
-        } catch(FacebookSDKException $e) {
-            $this->flashError(sprintf('A Facebook login error occurred. %s Please try again.', $e->getMessage()));
-        } catch(AccountDeactivatedException $e) {
+        } catch (FacebookResponseException $e) {
+            $this->flashError(trans('messages.system.login.error.facebook', ['error' => $e->getMessage()]));
+        } catch (FacebookSDKException $e) {
+            $this->flashError(trans('messages.system.login.error.facebook', ['error' => $e->getMessage()]));
+        } catch (AccountDeactivatedException $e) {
             $this->flashError($e->getMessage());
         } catch (\Exception $e) {
-            $this->flashError('A Facebook login error occurred, please try again.');
+            $this->flashError(trans('messages.system.login.error.facebook', ['error' => '']));
         }
 
         return redirect()->route('home');

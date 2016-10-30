@@ -28,7 +28,7 @@ wgg.services.facebook = (function(logger, globalSettings) {
             if (response.authResponse) {
                 var loginUrl = globalSettings.routes.login.facebook;
                 if (redirectUrl) {
-                    loginUrl += '?success_redirect=' + redirectUrl;
+                    loginUrl += '?redirect=' + redirectUrl;
                 }
                 window.location = loginUrl;
             } else {

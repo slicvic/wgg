@@ -69,9 +69,6 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
     function setjQueryBindings() {
         // Bind form validation
         $('.js-validate-form').parsley();
-        Parsley.addMessages('en', {
-            required:  'This field is required.',
-        });
 
         // Bind form submit
         $('#events--create-edit-form').submit(function(e) {
@@ -107,6 +104,7 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
         // Bind datetime pickers
         $('.js-datetimepicker').datetimepicker({
             minDate: Date.now(),
+            sideBySide: true,
             icons: {
                 time: 'fa fa-clock-o',
                 date: 'fa fa-calendar',

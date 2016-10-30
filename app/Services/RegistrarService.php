@@ -4,11 +4,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-
 use App\Exceptions\AccountDeactivatedException;
 use App\Models\User;
 use App\Models\SocialAccountType;
@@ -55,7 +53,7 @@ class RegistrarService
         $facebookUser = $response->getGraphUser();
 
         // Check if user already exists on our end
-        $user = User::findBySocialAccountIdAndSocialAccountTypeId($facebookUser['id'], SocialAccountType::FACEBOOK);
+        $user = User::findOneBySocialAccountIdAndSocialAccountTypeId($facebookUser['id'], SocialAccountType::FACEBOOK);
 
         // Throw error if account is deactivated
         if ($user && !$user->active) {

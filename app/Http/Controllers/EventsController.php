@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-
 use App\Http\Requests\StoreEventFormRequest;
 use App\Services\EventService;
 use App\Models\Event;
@@ -27,7 +26,8 @@ class EventsController extends BaseController
     public function __construct(EventService $eventService)
     {
         $this->middleware('auth')->except([
-            'search'
+            'search',
+            'show'
         ]);
 
         $this->eventService = $eventService;
@@ -196,10 +196,24 @@ class EventsController extends BaseController
     }
 
     /**
+     * Show the given event.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
+    public function show(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+
+        return view('events.show', compact('event'));
+    }
+
+    /**
      * Search events.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\View\View
      */
     public function search(Request $request)
     {

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 use App\Presenters\PresentableTrait;
 
 class Event extends Model
@@ -134,6 +133,22 @@ class Event extends Model
     {
         $events = static::where(['user_id' => $id])
                 ->orderBy('status_id', 'ASC')
+                ->orderBy('start_at', 'ASC')
+                ->get();
+
+        return $events;
+    }
+
+    /**
+     * Find all active events by the given user id.
+     *
+     * @param int $id
+     * @return Event[]
+     */
+    public static function findAllActiveByUserId($id)
+    {
+        $events = static::where(['user_id' => $id])
+                ->where('status_id', EventStatus::ACTIVE)
                 ->orderBy('start_at', 'ASC')
                 ->get();
 

@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Event;
 
 class UserProfile extends BaseController
 {
@@ -9,10 +11,14 @@ class UserProfile extends BaseController
      * Show a user's profile.
      *
      * @param  Request $request
+     * @param  int $id
      * @return \Illuminate\View\View
      */
     public function index(Request $request, $id)
     {
-        return view('home.index');
+        $user = User::findOrFail($id);
+        $events = Event::findAllActiveByUserId($id);
+
+        return view('user-profile.index', compact('user', 'events'));
     }
 }

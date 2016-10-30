@@ -3,29 +3,37 @@
 namespace App\Presenters;
 
 use Illuminate\Database\Eloquent\Model;
-
 use App\Models\SocialAccountType;
 
 class UserPresenter extends BasePresenter
 {
     /**
-     * Present profile picture URL.
+     * Get the profile picture URL.
      *
      * @param  int $width
      * @param  int $height
      * @return string
      */
-    public function profilePictureUrl($width = 30, $height = 30)
+    public function profilePictureUrl($width = 30, $height = null)
     {
-        $url = '';
-
         switch($this->model->social_account_type_id) {
             case SocialAccountType::FACEBOOK:
                 $url = str_replace('{id}', $this->model->social_account_id, env('FACEBOOK_PROFILE_PICTURE_URL'));
-                $url .= ($height) ? sprintf('?width=%s&height=%s', $width, $height) : sprintf('?width=%s', $width);
-                break;
+                $url .= sprintf('?width=%s&height=%s', $width, $height);
+                return $url;
         }
+    }
 
-        return $url;
+    /**
+     * Get the font awesome social icon CSS class.
+     *
+     * @return string
+     */
+    public function socialAccountIconCssClass()
+    {
+        switch($this->model->social_account_type_id) {
+            case SocialAccountType::FACEBOOK:
+                return 'fa fa-facebook-square';
+        }
     }
 }

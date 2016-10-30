@@ -2,10 +2,7 @@
 
 namespace App\Services;
 
-use InvalidArgumentException;
-
 use Illuminate\Support\Facades\DB;
-
 use App\Models\Event;
 use App\Models\EventVenue;
 use App\Models\EventStatus;
