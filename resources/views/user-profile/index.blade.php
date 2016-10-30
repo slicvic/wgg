@@ -1,5 +1,5 @@
 @extends('layouts.default')
-
+@section('body-class', 'user-profile')
 @section('content')
 <div class="container">
     <div class="row">
@@ -16,14 +16,34 @@
                 <h4><i class="fa fa-map-marker"></i> <small>{{ $user->location_name }}</small><h4>
             @endif
 
-            <div class="list-group">
+            <hr>
+            <h3 class="display-4 events-heading"><i class="fa fa-calendar"></i> My Games</h3>
 
-            @foreach ($events as $event)
-                <a href="{{ route('events.show', ['id' => $event->id]) }}" class="list-group-item list-group-item-action">
-                    <h5 class="list-group-item-heading">{{ $event->present()->title() }}</h5>
-                    <p class="list-group-item-text"><i class="fa fa-map-marker"></i> {{ $event->venue->name }}</p>
-                </a>
-            @endforeach
+            <div class="list-group events-list">
+                @forelse ($events as $event)
+                    <a href="{{ route('events.show', ['id' => $event->id]) }}" class="list-group-item list-group-item-action">
+                        <h5 class="list-group-item-heading">{{ $event->present()->title() }}</h5>
+                        <div class="media list-group-item-text">
+                            <div class="media-left">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                            <div class="media-body">
+                                {{ $event->present()->when('long') }}
+                            </div>
+                        </div>
+                        <div class="media list-group-item-text">
+                            <div class="media-left">
+                                <i class="fa fa-map-marker"></i>
+                            </div>
+                            <div class="media-body">
+                                {{ $event->venue->name }} <br>
+                                {{ $event->venue->address }}
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    No games scheduled.
+                @endforelse
             </div>
 
 

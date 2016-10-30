@@ -30,7 +30,7 @@ class EventPresenter extends BasePresenter
                 break;
             case 'medium':
             case 'long':
-                $format = 'l, M j, Y g:i A';
+                $format = 'l, F j, Y g:i A';
                 break;
         }
 

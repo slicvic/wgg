@@ -42,6 +42,6 @@
         </table>
     @else
         <hr>
-        <p>Looks like you have not created any games.</p>
+        <p>You have not created any games.</p>
     @endif
 @endsection

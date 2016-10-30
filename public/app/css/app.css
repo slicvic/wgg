@@ -6,6 +6,26 @@ body.home {
     padding-top: 54px;
 }
 
+h1 small {
+    font-size: 50%;
+    font-weight: 100;
+}
+
+.user-profile .events-heading {
+    font-size: 30px;
+}
+
+.user-profile .events-list .media-left i {
+   width: 20px;
+   text-align: center;
+}
+
+.user-profile .events-list .media {
+    margin-bottom: 5px;
+}
+
+/** Parsley Validation Overrides **/
+
 input.parsley-success,
 select.parsley-success,
 textarea.parsley-success {
@@ -42,8 +62,4 @@ textarea.parsley-error {
     opacity: 1;
 }
 
-
-h1 small {
-    font-size: 50%;
-    font-weight: 100;
-}
+/** End Parsley Validation Overrides **/
