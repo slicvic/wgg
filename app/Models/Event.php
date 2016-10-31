@@ -8,8 +8,6 @@ use App\Presenters\PresentableTrait;
 
 class Event extends Model
 {
-    const HOURS_SINCE_PASSED = 8;
-
     use SoftDeletes, PresentableTrait;
 
     /**
@@ -144,11 +142,26 @@ class Event extends Model
     public static function findAllByUserId($id)
     {
         $events = static::where(['user_id' => $id])
-                ->orderBy('status_id', 'ASC')
                 ->orderBy('start_at', 'ASC')
                 ->get();
 
-        return $events;
+        $grouped = [
+            'upcoming' => [],
+            'canceled' => [],
+            'past' => []
+        ];
+
+        foreach ($events as $event) {
+            if ($event->hasPassed()) {
+                $grouped['past'][] = $event;
+            } else if ($event->isCanceled()) {
+                $grouped['canceled'][] = $event;
+            } else {
+                $grouped['upcoming'][] = $event;
+            }
+        }
+
+        return $grouped;
     }
 
     /**

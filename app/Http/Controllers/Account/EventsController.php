@@ -25,6 +25,7 @@ class EventsController extends BaseController
     public function index(Request $request)
     {
         $events = Event::findAllByUserId(Auth::user()->id);
+        $events = array_merge($events['upcoming'], $events['canceled'], $events['past']);
 
         return view('account.events.index', compact('events'));
     }

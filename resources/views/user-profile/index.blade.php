@@ -29,41 +29,35 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                <h3 class="display-5"><i class="fa fa-calendar"></i> My Games</h3>
-                <hr>
-                <div class="list-group">
-                    @forelse ($events as $event)
-                        <a href="{{ route('events.show', ['id' => $event->id]) }}" class="list-group-item list-group-item-action">
-                            <h5 class="list-group-item-heading">
-                                {{ $event->present()->title() }}
-                                <span class="tag tag-default">{{ $event->type->label }}</span>
-                                @if ($event->isCanceled() || $event->hasPassed()){!! $event->present()->status(true) !!}@endif
-                            </h5>
-                            <div class="list-group-item-text">
-                                <div class="media">
-                                    <div class="media-left">
-                                        <i class="fa fa-clock-o"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        {{ $event->present()->when('long') }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item-text">
-                                <div class="media">
-                                    <div class="media-left">
-                                        <i class="fa fa-map-marker"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <div><strong>{{ $event->venue->name }}</strong></div>
-                                        <div>{{ $event->venue->address }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    @empty
-                        No games scheduled.
-                    @endforelse
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#upcoming" role="tab">Upcoming</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#past" role="tab">Past</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="upcoming" role="tabpanel">
+                        <br>
+                        <div class="list-group">
+                            @forelse (array_merge($events['upcoming'], $events['canceled']) as $event)
+                                @include('user-profile._events-list-item', compact('event'))
+                            @empty
+                                No upcoming games.
+                            @endforelse
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="past" role="tabpanel">
+                        <br>
+                        <div class="list-group">
+                            @forelse ($events['past'] as $event)
+                                @include('user-profile._events-list-item', compact('event'))
+                            @empty
+                                No past games.
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
