@@ -8,6 +8,8 @@ use App\Presenters\PresentableTrait;
 
 class Event extends Model
 {
+    const HOURS_SINCE_PASSED = 8;
+
     use SoftDeletes, PresentableTrait;
 
     /**
@@ -44,6 +46,16 @@ class Event extends Model
     public function status()
     {
         return $this->hasOne('App\Models\EventStatus', 'id', 'status_id');
+    }
+
+    /**
+     * Get the user record associated with the event.
+     *
+     * @return \App\Models\EventType
+     */
+    public function user()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
 
     /**
@@ -114,7 +126,7 @@ class Event extends Model
     }
 
     /**
-     * Set start at attribute.
+     * Set start datetime attribute.
      *
      * @param string $value
      */
@@ -133,22 +145,6 @@ class Event extends Model
     {
         $events = static::where(['user_id' => $id])
                 ->orderBy('status_id', 'ASC')
-                ->orderBy('start_at', 'ASC')
-                ->get();
-
-        return $events;
-    }
-
-    /**
-     * Find all active events by the given user id.
-     *
-     * @param int $id
-     * @return Event[]
-     */
-    public static function findAllActiveByUserId($id)
-    {
-        $events = static::where(['user_id' => $id])
-                ->where('status_id', EventStatus::ACTIVE)
                 ->orderBy('start_at', 'ASC')
                 ->get();
 

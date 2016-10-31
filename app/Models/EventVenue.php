@@ -3,9 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Presenters\PresentableTrait;
 
 class EventVenue extends Model
 {
+    use PresentableTrait;
+    /**
+     * {@inheritdoc}
+     */
+    protected $presenterClassName = 'App\Presenters\EventVenuePresenter';
+
     /**
      * {@inheritdoc}
      */

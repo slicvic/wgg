@@ -40,19 +40,29 @@ class EventPresenter extends BasePresenter
     /**
      * Present the status as plain text or bootstrap tag.
      *
-     * @param bool $asTag
+     * @param bool $asHtml
      * @return string
      */
-    public function status($asTag = false)
+    public function status($asHtml = false)
     {
         switch ($this->model->status->id) {
             case EventStatus::ACTIVE:
                 if ($this->model->hasPassed()) {
-                    return ($asTag) ? '<span class="tag tag-warning">Passed</span>' : 'Passed';
+                    return ($asHtml) ? '<span class="tag tag-warning">Passed</span>' : 'Passed';
                 }
-                return ($asTag) ? '<span class="tag tag-success">On</span>' : 'On';
+                return ($asHtml) ? '<span class="tag tag-success">On</span>' : 'On';
             default:
-                return ($asTag) ? '<span class="tag tag-danger">Canceled</span>' : 'Canceled';
+                return ($asHtml) ? '<span class="tag tag-danger">Canceled</span>' : 'Canceled';
         }
+    }
+
+    /**
+     * Present the description.
+     * 
+     * @return string
+     */
+    public function description()
+    {
+        return str_replace("\n", '<br>', $this->model->description);
     }
 }

@@ -17,7 +17,7 @@ class UserProfile extends BaseController
     public function index(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $events = Event::findAllActiveByUserId($id);
+        $events = Event::findAllByUserId($id);
 
         return view('user-profile.index', compact('user', 'events'));
     }

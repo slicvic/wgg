@@ -2,7 +2,6 @@
 
 namespace App\Presenters;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\SocialAccountType;
 
 class UserPresenter extends BasePresenter
@@ -19,7 +18,7 @@ class UserPresenter extends BasePresenter
         switch($this->model->social_account_type_id) {
             case SocialAccountType::FACEBOOK:
                 $url = str_replace('{id}', $this->model->social_account_id, env('FACEBOOK_PROFILE_PICTURE_URL'));
-                $url .= sprintf('?width=%s&height=%s', $width, $height);
+                $url .= "?width={$width}&height={$height}";
                 return $url;
         }
     }
@@ -35,5 +34,15 @@ class UserPresenter extends BasePresenter
             case SocialAccountType::FACEBOOK:
                 return 'fa fa-facebook-square';
         }
+    }
+
+    /**
+     * Get the join date.
+     *
+     * @return string
+     */
+    public function joinDate()
+    {
+        return date('F j, Y', strtotime($this->model->created_at));
     }
 }
