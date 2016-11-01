@@ -8,7 +8,10 @@
                     <div class="card-block event-title">
                         <h1 class="card-title display-4">
                             {{ $event->present()->title() }}
-                            @if ($event->isCanceled() || $event->hasPassed()){!! $event->present()->status(true) !!}@endif
+                            @if ($event->isCanceled()){!! $event->present()->status(true) !!}@endif
+                            @if ($event->isOrganizer(Auth::user()))
+                                <a href="{{ route('events.edit', ['id' => $event->id]) }}" class="btn btn-link"><i class="fa fa-pencil"></i> Edit</a>
+                            @endif
                         </h1>
                         <h6 class="card-subtitle text-muted">{{ $event->type->label }}</h6>
                     </div>
@@ -19,7 +22,8 @@
                                     <i class="fa fa-clock-o"></i>
                                 </div>
                                 <div class="media-body">
-                                    {{ $event->present()->when('long') }}
+                                    <div>{{ $event->present()->when('long') }}</div>
+                                    <div class="text-warning">{{ $event->present()->when('diff') }}</div>
                                 </div>
                             </div>
                         </li>

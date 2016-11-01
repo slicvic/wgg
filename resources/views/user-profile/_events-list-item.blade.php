@@ -10,7 +10,8 @@
                 <i class="fa fa-clock-o"></i>
             </div>
             <div class="media-body">
-                {{ $event->present()->when('long') }}
+                <div>{{ $event->present()->when('long') }}</div>
+                <div class="text-warning">{{ $event->present()->when('diff') }}</div>
             </div>
         </div>
     </div>

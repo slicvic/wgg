@@ -1,9 +1,9 @@
 <?php
     switch (Route::currentRouteName()) {
-        case 'events.getEdit':
+        case 'events.edit':
             $formAction = route('events.postEdit', ['id' => $event->id]);
             break;
-        case 'events.getReschedule':
+        case 'events.reschedule':
             $formAction = route('events.postReschedule', ['id' => $event->id]);
             break;
         default:

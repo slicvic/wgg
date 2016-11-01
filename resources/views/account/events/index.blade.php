@@ -25,16 +25,23 @@
                         <td>{{ $event->type->label }}</td>
                         <td>{!! $event->present()->status(true) !!}</td>
                         <td>{{ $event->venue->name }}</td>
-                        <td>{{ $event->present()->when('long') }}</td>
+                        <td>{{ $event->present()->when('long') }} (<span class="text-warning">{{ $event->present()->when('diff') }}</span>)</td>
                         <td>
-                            @if ($event->isCanceled() || $event->hasPassed())
-                                <a href="{{ route('events.getReschedule', ['id' => $event->id]) }}" class="btn btn-primary">Reschedule</a>
-                            @else
-                                <a href="{{ route('events.getEdit', ['id' => $event->id]) }}" class="btn btn-primary">Edit</a>
-                                <a href="{{ route('events.cancel', ['id' => $event->id]) }}"
-                                    class="btn btn-danger"
-                                    v-on:click="cancelEvent">Cancel</a>
-                            @endif
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    @if ($event->isCanceled() || $event->hasPassed())
+                                        <li><a href="{{ route('events.reschedule', ['id' => $event->id]) }}">Reschedule</a></li>
+                                    @else
+                                        <li><a href="{{ route('events.edit', ['id' => $event->id]) }}">Edit</a></li>
+                                        <li><a href="{{ route('events.cancel', ['id' => $event->id]) }}" v-on:click="cancelEvent">Cancel</a></li>
+                                    @endif
+                                    <li role="separator" class="divider"></li> 
+                                    <li><a href="{{ route('events.show', ['id' => $event->id]) }}">View</a></li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

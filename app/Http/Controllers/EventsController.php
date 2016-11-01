@@ -39,7 +39,7 @@ class EventsController extends BaseController
      * @param  Request $request
      * @return \Illuminate\View\View
      */
-    public function getCreate(Request $request)
+    public function create(Request $request)
     {
         $event = new Event;
 
@@ -82,7 +82,7 @@ class EventsController extends BaseController
      * @param  int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function getEdit(Request $request, $id)
+    public function edit(Request $request, $id)
     {
         $event = Event::findOrFail($id);
 
@@ -132,7 +132,7 @@ class EventsController extends BaseController
      * @param  int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function getReschedule(Request $request, $id)
+    public function reschedule(Request $request, $id)
     {
         $event = Event::findOrFail($id);
 

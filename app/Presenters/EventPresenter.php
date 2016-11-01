@@ -32,6 +32,8 @@ class EventPresenter extends BasePresenter
             case 'long':
                 $format = 'l, F j, Y g:i A';
                 break;
+            case 'diff':
+                return \Carbon\Carbon::createFromTimeStamp(strtotime($this->model->start_at))->diffForHumans();
         }
 
         return date($format, strtotime($this->model->start_at));
@@ -58,11 +60,11 @@ class EventPresenter extends BasePresenter
 
     /**
      * Present the description.
-     * 
+     *
      * @return string
      */
     public function description()
     {
-        return str_replace("\n", '<br>', $this->model->description);
+        return nl2br($this->model->description);
     }
 }

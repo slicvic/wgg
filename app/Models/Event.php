@@ -11,6 +11,11 @@ class Event extends Model
     use SoftDeletes, PresentableTrait;
 
     /**
+     * Number of hours until an event is considered past due.
+     */
+    const HOURS_UNTIL_PAST_DUE = 8;
+
+    /**
      * {@inheritdoc}
      */
     protected $presenterClassName = 'App\Presenters\EventPresenter';
@@ -93,12 +98,11 @@ class Event extends Model
      */
     public function hasPassed()
     {
-        // Check if more than X hours have passed since the game started
-        $hoursPassed = 8;
+        // Check if more than X hours have passed since the event started
         $now = time();
         $start = strtotime($this->start_at);
 
-        return (($now - $start) > (3600 * $hoursPassed));
+        return (($now - $start) > (3600 * static::HOURS_UNTIL_PAST_DUE));
     }
 
     /**
