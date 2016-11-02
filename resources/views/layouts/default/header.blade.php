@@ -13,8 +13,8 @@
                         <img class="rounded" src="{{ Auth::user()->present()->profilePictureUrl(20, 20) }}"> {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => Auth::user()->id]) }}"><i class="fa fa-user"></i> Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ route('account.events.index') }}"><i class="fa fa-futbol-o"></i> Manage games</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.profile', ['id' => Auth::user()->id]) }}"><i class="fa fa-user"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.account.events.index') }}"><i class="fa fa-futbol-o"></i> Manage games</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </li>

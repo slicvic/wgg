@@ -24,13 +24,13 @@
         <![endif]-->
     </head>
     <body class="@yield('body-class')">
-        @include('header')
+        @include('layouts.default.header')
 
         <div id="content" class="container">
             @include('flash-message')
             @yield('content')
         </div>
 
-        @include('footer')
+        @include('layouts.default.footer')
     </body>
 </html>

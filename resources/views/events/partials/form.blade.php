@@ -99,7 +99,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label"></label>
         <div class="col-sm-10">
-            <a href="{{ route('account.events.index') }}" class="btn btn-default">Cancel</a>
+            <a href="{{ route('user.account.events.index') }}" class="btn btn-default">Cancel</a>
             <button
                 type="submit"
                 class="btn btn-primary btn-lg"

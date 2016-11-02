@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\User\Account;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +27,6 @@ class EventsController extends BaseController
         $events = Event::findAllByUserId(Auth::user()->id);
         $events = array_merge($events['upcoming'], $events['canceled'], $events['past']);
 
-        return view('account.events.index', compact('events'));
+        return view('user.account.events.index', compact('events'));
     }
 }

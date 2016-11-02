@@ -1,5 +1,6 @@
-@extends('layouts.default')
+@extends('layouts.default.layout')
 @section('body-class', 'event-page')
+
 @section('content')
     <div class="container">
         <div class="row">
@@ -72,7 +73,7 @@
                     <img class="img-thumbnail" src="{{ $event->user->present()->profilePictureUrl(100) }}" alt="{{ $event->user->name }}">
                     <br><br>
                     <div class="card-footer text-muted">
-                        <a href="{{ route('user-profile', ['id' => $event->user->id]) }}" class="card-link">Profile</a>
+                        <a href="{{ route('user.profile', ['id' => $event->user->id]) }}" class="card-link">Profile</a>
                     </div>
                 </div>
             </div>

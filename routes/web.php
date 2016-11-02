@@ -20,13 +20,11 @@ Route::group(['namespace' => 'Ajax'], function() {
 Route::get('/login/facebook', 'LoginController@facebook')->name('login.facebook');
 Route::get('/logout', 'LoginController@logout')->name('logout');
 
-// Account
-Route::group(['namespace' => 'Account'], function() {
-    Route::get('/account/events', 'EventsController@index')->name('account.events.index');
+// User
+Route::group(['namespace' => 'User'], function() {
+    Route::get('/account/events', 'Account\EventsController@index')->name('user.account.events.index');
+    Route::get('/profile/{id}', 'ProfileController@index')->name('user.profile')->where('id', '[0-9]+');
 });
-
-// UserProfile
-Route::get('/users/{id}', 'UserProfile@index')->name('user-profile')->where('id', '[0-9]+');
 
 // Events
 Route::get('/events/create', 'EventsController@create')->name('events.create');

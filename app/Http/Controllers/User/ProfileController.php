@@ -1,14 +1,15 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 use App\Models\User;
 use App\Models\Event;
 
-class UserProfile extends BaseController
+class ProfileController extends BaseController
 {
     /**
-     * Show a user's profile.
+     * Show the given user profile.
      *
      * @param  Request $request
      * @param  int $id
@@ -19,6 +20,6 @@ class UserProfile extends BaseController
         $user = User::findOrFail($id);
         $events = Event::findAllByUserId($id);
 
-        return view('user-profile.index', compact('user', 'events'));
+        return view('user.profile.index', compact('user', 'events'));
     }
 }

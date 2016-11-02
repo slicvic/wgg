@@ -20,8 +20,10 @@
             login: {
                 facebook: '{{ route('login.facebook') }}'
             },
-            account: {
-                events: '{{ route('account.events.index') }}'
+            user: {
+                account: {
+                    events: '{{ route('user.account.events.index') }}'
+                }    
             },
             events: {
                 create: '{{ route('events.create') }}',

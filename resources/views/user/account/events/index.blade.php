@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.default.layout')
 
 @section('content')
     <h1 class="display-4">
@@ -25,7 +25,7 @@
                         <td>{{ $event->type->label }}</td>
                         <td>{!! $event->present()->status(true) !!}</td>
                         <td>{{ $event->venue->name }}</td>
-                        <td>{{ $event->present()->when('long') }} (<span class="text-warning">{{ $event->present()->when('diff') }}</span>)</td>
+                        <td>{{ $event->present()->when('long') }} <span class="text-warning">({{ $event->present()->when('diff') }})</span></td>
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -38,7 +38,7 @@
                                         <li><a href="{{ route('events.edit', ['id' => $event->id]) }}">Edit</a></li>
                                         <li><a href="{{ route('events.cancel', ['id' => $event->id]) }}" v-on:click="cancelEvent">Cancel</a></li>
                                     @endif
-                                    <li role="separator" class="divider"></li> 
+                                    <li role="separator" class="divider"></li>
                                     <li><a href="{{ route('events.show', ['id' => $event->id]) }}">View</a></li>
                                 </ul>
                             </div>

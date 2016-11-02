@@ -79,7 +79,7 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
 
             $.post(form.attr('action'), form.serialize())
                 .done(function(response) {
-                    window.location = globalSettings.routes.account.events;
+                    window.location = globalSettings.routes.user.account.events;
                 }).fail(function(response) {
                     if (response.responseJSON.error) {
                         if (response.responseJSON.error.message_format === 'html') {
@@ -205,6 +205,9 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
                     $(el.data('bind-field-lng')).val(place.geometry.location.lng());
                     $(el.data('bind-field-address')).val(place.formatted_address);
                     $(el.data('bind-field-url')).val(place.url);
+                    for (var i=0;i<place.photos.length; i++) {
+                        logger.info('PlacesService.getDetails.photos', place.photos[i].getUrl({'maxWidth': 500, 'maxHeight': 500}));
+                    }
                 }
             });
         }).on('change', function(e) {
