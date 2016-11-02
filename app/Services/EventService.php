@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use App\Contracts\EventServiceInterface;
 use App\Models\Event;
 use App\Models\EventVenue;
 use App\Models\EventStatus;
 
-class EventService
+class EventService implements EventServiceInterface
 {
     /**
      * Create a new event.

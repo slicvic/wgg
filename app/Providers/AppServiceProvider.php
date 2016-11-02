@@ -23,12 +23,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('App\Services\EventService', function ($app) {
+        $this->app->singleton('App\Contracts\EventServiceInterface', function ($app) {
             return new \App\Services\EventService();
         });
 
-        $this->app->singleton('App\Services\RegistrarService', function ($app) {
+        $this->app->singleton('App\Contracts\RegistrarServiceInterface', function ($app) {
             return new \App\Services\RegistrarService();
+        });
+
+        $this->app->singleton('App\Contracts\GeoIpServiceInterface', function ($app) {
+            return new \App\Services\IpInfoService();
         });
     }
 }

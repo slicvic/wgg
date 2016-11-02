@@ -5,15 +5,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreEventFormRequest;
-use App\Services\EventService;
+use App\Contracts\EventServiceInterface;
 use App\Models\Event;
 use App\Models\EventStatus;
 
 class EventsController extends BaseController
 {
     /**
-     * Instance of event service.
-     *
      * @var EventService
      */
     protected $eventService;
@@ -21,9 +19,9 @@ class EventsController extends BaseController
     /**
      * Constructor.
      *
-     * @param EventService $eventService
+     * @param EventServiceInterface $eventService
      */
-    public function __construct(EventService $eventService)
+    public function __construct(EventServiceInterface $eventService)
     {
         $this->middleware('auth')->except([
             'search',

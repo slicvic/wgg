@@ -195,7 +195,6 @@ wgg.app = (function($, logger, Vue, google, globalSettings) {
             }
         }).on('typeahead:selected', function (obj, datum) {
             var el = $(this);
-
             // Get new latitude and longitude
             globalSettings.google.maps.services.places.getDetails({
                 placeId: datum.place_id

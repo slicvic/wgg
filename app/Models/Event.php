@@ -11,9 +11,9 @@ class Event extends Model
     use SoftDeletes, PresentableTrait;
 
     /**
-     * Number of hours until an event is considered past due.
+     * The number of hours after start time an event must have to be considered "past due".
      */
-    const HOURS_UNTIL_PAST_DUE = 8;
+    const PAST_DUE_THRESHOLD = 8;
 
     /**
      * {@inheritdoc}
@@ -102,7 +102,7 @@ class Event extends Model
         $now = time();
         $start = strtotime($this->start_at);
 
-        return (($now - $start) > (3600 * static::HOURS_UNTIL_PAST_DUE));
+        return (($now - $start) > (3600 * static::PAST_DUE_THRESHOLD));
     }
 
     /**
@@ -174,24 +174,18 @@ class Event extends Model
      * @param  array $criteria [description]
      * @return Event[]
      */
-    public static function search(array $criteria = [])
+    public static function searchQuery(array $criteria = [])
     {
-        $query = Event::query();
-        $query->orderBy('start_at', 'ASC');
+        $query = Event::query()
+            ->select('events.*')
+            ->orderBy('start_at', 'ASC')
+            ->where('status_id', EventStatus::ACTIVE);
 
-        if (!empty($criteria['type_id'])) {
+        if (isset($criteria['type_id'])) {
             $query->where('type_id', $criteria['type_id']);
         }
 
-        if (!empty($criteria['status_id'])) {
-            $query->where('status_id', $criteria['status_id']);
-        }
-
-        //$criteria['within_miles'] = 10000;
-        //$criteria['lat'] = '25.844725';
-        //$criteria['lng'] = '-80.179466';
-
-        if (!(empty($criteria['within_miles']) && empty($criteria['lat']) && empty($criteria['lng']))) {
+        if (isset($criteria['near']['lat'], $criteria['near']['lng'], $criteria['near']['within_miles'])) {
             // Multiply by 6371 (earth's radius in KM) to get distance in KM
             // Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
             $query->selectRaw('
@@ -200,14 +194,17 @@ class Event extends Model
                         COS(RADIANS(?)) * COS(RADIANS(event_venues.lat)) *
                         COS(RADIANS(event_venues.lng) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(event_venues.lat))
                     ) * 6371 * 0.621371
-                ) AS computed_distance
-            ', [$criteria['lat'], $criteria['lng'], $criteria['lat']])
+                ) AS distance
+            ', [$criteria['near']['lat'], $criteria['near']['lng'], $criteria['near']['lat']]
+            )
             ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
-            ->having('computed_distance', '<=', $criteria['within_miles']);
+            ->having('distance', '<=', $criteria['near']['within_miles']);
         }
 
-        $result = $query->get();
+        return $query;
 
-        return $result;
+        //$result = $query->get();
+
+        //return $result;
     }
 }

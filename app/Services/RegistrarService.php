@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
+use App\Contracts\RegistrarServiceInterface;
 use App\Exceptions\AccountDeactivatedException;
 use App\Models\User;
 use App\Models\SocialAccountType;
 
-class RegistrarService
+class RegistrarService implements RegistrarServiceInterface
 {
     /**
      * Register a user through Facebook.

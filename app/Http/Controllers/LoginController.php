@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
+use App\Contracts\RegistrarServiceInterface;
 use App\Exceptions\AccountDeactivatedException;
-use App\Services\RegistrarService;
 
 class LoginController extends BaseController
 {
@@ -18,9 +18,9 @@ class LoginController extends BaseController
     /**
      * Constructor.
      *
-     * @param RegistrarService $registrarService
+     * @param RegistrarServiceInterface $registrarService
      */
-    public function __construct(RegistrarService $registrarService)
+    public function __construct(RegistrarServiceInterface $registrarService)
     {
         $this->registrarService = $registrarService;
     }

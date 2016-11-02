@@ -1,36 +1,35 @@
 @extends('layouts.default')
-@section('body-class', 'home')
+@section('body-class', 'homxe')
 @section('content')
+    <div class="jumbotron">
+        <h1 class="display-3">Welcome to Who's Got Game!</h1>
+        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+        <hr class="my-2">
+        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        </p>
 
-<style>
-          /* Always set the map height explicitly to define the size of the div
-           * element that contains the map. */
-          #map {
-              height: 100%;
-              width: 100%;
-          }
-          #content {
-              height: 100%;
-              width: 100%;
-              padding: 0;
-              margin: 0;
-          }
-          /* Optional: Makes the sample page fill the window. */
-          html, body {
-            height: 100%;
-            width: 100%;
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="exampleInputPassword3">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+    </div>
 
-          }
-        </style>
-    <div id="map"></div>
 
-    <form class="form" style="position: absolute">
-        <input type="hidden" name="" id="city-lat">
-        <input type="hidden" name="" id="city-lng">
-        <input type="text" name="" class="js-typeahead-city"
-            data-bind-field-lat="#city-lat"
-            data-bind-field-lng="#city-lng">
-
-    </form>
-
+    @foreach ($events as $event)
+    <div class="card card-block">
+        <h4 class="card-title">{{ $event->present()->title() }}</h4>
+        <p class="card-text">{{ $event->id }}</p>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+    </div>
+    @endforeach
 @endsection

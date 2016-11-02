@@ -46,17 +46,17 @@ h1 small {
 input.parsley-success,
 select.parsley-success,
 textarea.parsley-success {
-    color: #3c763d;
-    background-color: #dff0d8;
-    border: 1px solid #d0e9c6;
+    color: #5cb85c;
+    background-color: #fff;
+    border: 1px solid #5cb85c;
 }
 
 input.parsley-error,
 select.parsley-error,
 textarea.parsley-error {
     color: #B94A48;
-    background-color: #f2dede;
-    border: 1px solid #ebcccc;
+    background-color: #fff;
+    border: 1px solid #d9534f;
 }
 
 .parsley-errors-list {
@@ -72,7 +72,7 @@ textarea.parsley-error {
     -moz-transition: all .3s ease-in;
     -webkit-transition: all .3s ease-in;
 
-    color: #a94442;
+    color: #d9534f;
 }
 
 .parsley-errors-list.filled {
