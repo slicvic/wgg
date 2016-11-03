@@ -30,19 +30,21 @@ class HomeController extends BaseController
      */
     public function index(Request $request)
     {
-        $clientIp = '73.85.49.134';//$request->ip();
-        $clientGeo = $this->geoIpService->getGeolocationByIp($clientIp);
+        $ip = '73.85.49.134';//$request->ip();
+        $geolocation = $this->geoIpService->getGeolocationByIp($ip);
 
         $criteria = [
             'near' => [
-                'lat' => $clientGeo['loc'][0],
-                'lng' => $clientGeo['loc'][1],
-                'within_miles' => 100
+                'lat' => $geolocation['lat'],
+                'lng' => $geolocation['lng'],
+                'within_miles' => 50
             ]
         ];
 
-        $events = Event::searchQuery($criteria)->get();
+        $events = Event::createSearchQuery($criteria)
+                        ->limit(10)
+                        ->get();
 
-        return view('home.index', compact('clientGeo', 'events'));
+        return view('home.index', compact('geolocation', 'events'));
     }
 }

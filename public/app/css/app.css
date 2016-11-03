@@ -41,6 +41,10 @@ h1 small {
     background-color: #f5f5f5;
 }
 
+.events-inline-search-form .twitter-typeahead input[type="text"] {
+    vertical-align: middle!important;
+}
+
 /** Parsley Validation Overrides **/
 
 input.parsley-success,

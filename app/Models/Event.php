@@ -174,20 +174,37 @@ class Event extends Model
      * @param  array $criteria [description]
      * @return Event[]
      */
-    public static function searchQuery(array $criteria = [])
+    public static function createSearchQuery(array $criteria = [])
     {
         $query = Event::query()
-            ->select('events.*')
-            ->orderBy('start_at', 'ASC')
-            ->where('status_id', EventStatus::ACTIVE);
+                        ->select('events.*')
+                        ->orderBy('events.start_at', 'ASC')
+                        ->where('events.status_id', EventStatus::ACTIVE)
+                        ->whereDate('events.start_at', '>=', date('Y-m-d'));
 
-        if (isset($criteria['type_id'])) {
-            $query->where('type_id', $criteria['type_id']);
+        if (!empty($criteria['q'])) {
+            $query
+                ->join('event_types', 'events.type_id', '=', 'event_types.id')
+                ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
+                ->where(function ($query) use ($criteria) {
+                    $query
+                        ->where('events.title', 'LIKE', '%' . $criteria['q'] . '%')
+                        ->orWhere('events.description', 'LIKE', '%' . $criteria['q'] . '%')
+                        ->orWhere('event_types.name', 'LIKE', '%' . $criteria['q'] . '%')
+                        ->orWhere('event_venues.name', 'LIKE', '%' . $criteria['q'] . '%');
+                });
         }
 
-        if (isset($criteria['near']['lat'], $criteria['near']['lng'], $criteria['near']['within_miles'])) {
-            // Multiply by 6371 (earth's radius in KM) to get distance in KM
-            // Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
+        if (!(empty($criteria['near']['lat']) && empty($criteria['near']['lng']) && empty($criteria['near']['within_miles']))) {
+
+            if (!empty($criteria['q'])) {
+                $query->join('event_venues', 'events.venue_id', '=', 'event_venues.id');
+            }
+
+            /**
+             * Multiply by 6371 (earth's radius in KM) to get distance in KM
+             * Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
+             */
             $query->selectRaw('
                 (
                     ACOS(
@@ -197,14 +214,9 @@ class Event extends Model
                 ) AS distance
             ', [$criteria['near']['lat'], $criteria['near']['lng'], $criteria['near']['lat']]
             )
-            ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
             ->having('distance', '<=', $criteria['near']['within_miles']);
         }
 
         return $query;
-
-        //$result = $query->get();
-
-        //return $result;
     }
 }

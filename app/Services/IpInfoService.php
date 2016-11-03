@@ -26,10 +26,9 @@ class IpInfoService implements GeoIpServiceInterface
     public function getGeolocationByIp($ip)
     {
         $result = [
-            'city' => '',
-            'region' => '',
-            'country' => '',
-            'loc' => ['', '']
+            'city' => null,
+            'lat' => null,
+            'lng' => null
         ];
 
         $ch = curl_init();
@@ -40,11 +39,11 @@ class IpInfoService implements GeoIpServiceInterface
         curl_close($ch);
         $decodedBody = json_decode($body, true);
 
-        if (isset($decodedBody['loc'], $decodedBody['city'], $decodedBody['region'], $decodedBody['country'])) {
-            $result['city'] = $decodedBody['city'];
-            $result['region'] = $decodedBody['region'];
-            $result['country'] = $decodedBody['country'];
-            $result['loc'] = explode(',', $decodedBody['loc']);
+        if (!(empty($decodedBody['loc']) && empty($decodedBody['city']) && empty($decodedBody['region']) && empty($decodedBody['country']))) {
+            list($result['lat'], $result['lng']) = explode(',', $decodedBody['loc']);
+            $result['city'] = ('US' === $decodedBody['country'])
+                            ? $decodedBody['city'] . ', ' . $decodedBody['region']
+                            : $decodedBody['city'] . ', ' . $decodedBody['country'];
         }
 
         return $result;

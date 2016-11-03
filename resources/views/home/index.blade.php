@@ -3,24 +3,36 @@
 
 @section('content')
     <div class="jumbotron">
-        <h1 class="display-3">Welcome to Who's Got Game!</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-        <hr class="my-2">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <p class="lead">
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </p>
-
-        <form class="form-inline">
+        <h1 class="display-4">Who's Got Game!</h1>
+        <p class="lead">Find and organize pickup games.</p>
+        <hr>
+        <form class="form-inline events-inline-search-form">
             <div class="form-group">
-                <label class="sr-only" for="exampleInputEmail3">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Enter email">
+                <input type="text" class="form-control form-control-lg"
+                    name="q"
+                    size="35"
+                    placeholder="Search for stuff like soccer">
             </div>
             <div class="form-group">
-                <label class="sr-only" for="exampleInputPassword3">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Password">
+                <label>within</label>
+                <select class="form-control form-control-lg" name="within_miles">
+                    @for ($i = 5; $i <= 50; $i+=5)
+                        <option value="{{ $i }}">{{ $i }} miles</option>
+                    @endfor
+                </select>
             </div>
-            <button type="submit" class="btn btn-primary">Sign in</button>
+            <div class="form-group">
+                <label>of</label>
+                <input type="hidden" name="lat" id="events-inline-search-form--lat" value="{{ $geolocation['lat'] }}">
+                <input type="hidden" name="lng" id="events-inline-search-form--lng" value="{{ $geolocation['lng'] }}">
+                <input type="text"
+                    name="city"
+                    class="form-control form-control-lg js-typeahead-city"
+                    value="{{ $geolocation['city'] }}"
+                    data-bind-field-lat="#events-inline-search-form--lat"
+                    data-bind-field-lng="#events-inline-search-form--lng">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Search</button>
         </form>
     </div>
 
