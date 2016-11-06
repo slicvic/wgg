@@ -33,17 +33,19 @@ class HomeController extends BaseController
         $ip = '73.85.49.134';//$request->ip();
         $geolocation = $this->geoIpService->getGeolocationByIp($ip);
 
-        $criteria = [
-            'near' => [
-                'lat' => $geolocation['lat'],
-                'lng' => $geolocation['lng'],
-                'within_miles' => 50
-            ]
-        ];
+        $events = Event::nearby($geolocation['lat'], $geolocation['lng'], 10)
+            //->fullTextSearch('')
+            ->active()
+            ->upcoming()
+            ->get();
 
-        $events = Event::createSearchQuery($criteria)
-                        ->limit(10)
-                        ->get();
+
+//        ->orderBy('start_at', 'ASC')
+//        ->where('status_id', EventStatus::ACTIVE)
+//        ->whereDate('start_at', '>=', date('Y-m-d'))
+    //    ->whereDate('events.start_at', '>=', date('Y-m-d'))
+
+    //    ->get();
 
         return view('home.index', compact('geolocation', 'events'));
     }

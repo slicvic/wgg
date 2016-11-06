@@ -9,7 +9,7 @@ use App\Models\Event;
 class ProfileController extends BaseController
 {
     /**
-     * Show the given user profile.
+     * Show a given user profile.
      *
      * @param  Request $request
      * @param  int $id

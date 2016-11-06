@@ -91,7 +91,7 @@ class EventsController extends BaseController
     }
 
     /**
-     * Update the given event.
+     * Update a given event.
      *
      * @param  Request $request
      * @param  int $id
@@ -141,7 +141,7 @@ class EventsController extends BaseController
     }
 
     /**
-     * Reschedule the given event.
+     * Reschedule a given event.
      *
      * @param  Request $request
      * @param  int $id
@@ -174,7 +174,7 @@ class EventsController extends BaseController
     }
 
     /**
-     * Cancel the given event.
+     * Cancel a given event.
      *
      * @param Request $request
      * @param int $id
@@ -194,7 +194,7 @@ class EventsController extends BaseController
     }
 
     /**
-     * Show the given event.
+     * Show a given event.
      *
      * @param Request $request
      * @param int $id

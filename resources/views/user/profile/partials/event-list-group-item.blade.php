@@ -10,8 +10,8 @@
                 <i class="fa fa-clock-o"></i>
             </div>
             <div class="media-body">
-                <div>{{ $event->present()->when('long') }}</div>
-                <div class="text-warning">{{ $event->present()->when('diff') }}</div>
+                <div>{{ $event->present()->date('long') }}</div>
+                <div class="text-warning">{{ $event->present()->time() }}</div>
             </div>
         </div>
     </div>

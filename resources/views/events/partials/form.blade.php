@@ -82,7 +82,7 @@
                 name="event[start_at]"
                 placeholder="e.g. 10/08/2016 1:00 PM"
                 class="form-control js-datetimepicker"
-                value="{{ ($event->exists) ? $event->present()->when() : '' }}"
+                value="{{ ($event->exists) ? date('m/d/Y g:i A', strtotime($event->start_at)) : '' }}"
                 data-parsley-required-message="Choose a day and time."
                 required>
         </div>

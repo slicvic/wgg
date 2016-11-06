@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use Carbon\Carbon;
 use App\Models\EventStatus;
 
 class EventPresenter extends BasePresenter
@@ -17,26 +18,49 @@ class EventPresenter extends BasePresenter
     }
 
     /**
-     * Present the start date and time.
+     * Present the start date.
      *
-     * @param string $format
+     * @param string $type short|medium|long
      * @return string
      */
-    public function when($format = 'short')
+    public function date($type = 'long')
     {
-        switch ($format) {
-            case 'short':
-                $format = 'm/d/Y g:i A';
-                break;
-            case 'medium':
-            case 'long':
-                $format = 'l, F j, Y g:i A';
-                break;
-            case 'diff':
-                return \Carbon\Carbon::createFromTimeStamp(strtotime($this->model->start_at))->diffForHumans();
+        /*$now = \Carbon\Carbon::createFromTimeStamp(strtotime(\Carbon\Carbon::now('America/New_York')));
+        $start = \Carbon\Carbon::createFromTimeStamp(strtotime($this->model->start_at));
+        $diffForHumans =  $start->diffForHumans($now);
+        $diffForHumans = str_replace(['before', 'after'], ['ago', 'from now'], $diffForHumans);
+        return $diffForHumans;*/
+        $timestamp = strtotime($this->model->start_at);
+        $carbon = Carbon::createFromTimeStamp($timestamp);
+        $date = date('l, F j, Y', $timestamp);
+        $humanDay = null;
+        if ($carbon->isToday()) {
+            $humanDay = 'Today';
+        } elseif ($carbon->isTomorrow()) {
+            $humanDay = 'Tomorrow';
+        } elseif ($carbon->isYesterday()) {
+            $humanDay = 'Yesterday';
         }
 
-        return date($format, strtotime($this->model->start_at));
+        switch ($type) {
+            case 'short':
+                return ($humanDay) ?: $date;
+            case 'medium':
+                return $date;
+            case 'long':
+            default:
+                return ($humanDay) ? $humanDay . ', ' . $date : $date;
+        }
+    }
+
+    /**
+     * Present the start time.
+     *
+     * @return string
+     */
+    public function time()
+    {
+        return date('g:i A', strtotime($this->model->start_at));
     }
 
     /**

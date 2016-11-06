@@ -10,8 +10,8 @@
             <div class="form-group">
                 <input type="text" class="form-control form-control-lg"
                     name="q"
-                    size="35"
-                    placeholder="Search for stuff like soccer">
+                    size="25"
+                    placeholder="All games">
             </div>
             <div class="form-group">
                 <label>within</label>
@@ -36,13 +36,10 @@
         </form>
     </div>
 
+    <div class="card-columns">
 
     @foreach ($events as $event)
-    <div class="card card-block">
-        <h4 class="card-title">{{ $event->present()->title() }}</h4>
-        <p class="card-text">{{ $event->id }}</p>
-        <a href="#" class="card-link">Card link</a>
-        <a href="#" class="card-link">Another link</a>
-    </div>
+        @include('partials.events.card', compact('event'))
     @endforeach
+</div>
 @endsection

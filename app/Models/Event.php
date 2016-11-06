@@ -106,7 +106,7 @@ class Event extends Model
     }
 
     /**
-     * Check if the given user is the organizer.
+     * Check if a given user is the organizer.
      *
      * @param int $user
      * @return bool
@@ -124,6 +124,7 @@ class Event extends Model
     public function cancel()
     {
         $this->status_id = EventStatus::CANCELED;
+
         return $this->save();
     }
 
@@ -138,7 +139,94 @@ class Event extends Model
     }
 
     /**
-     * Find all events by the given user id.
+     * Scope a query to only include events with the given criteria.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  double $lat
+     * @param  double $lng
+     * @param  int $withinMiles
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNearby($query, $lat, $lng, $withinMiles = 50)
+    {
+        $query->select('events.*');
+
+        if (!$this->isJoined($query, 'event_venues')) {
+            $query->join('event_venues', 'events.venue_id', '=', 'event_venues.id');
+        }
+
+        /**
+         * Multiply by 6371 (earth's radius in KM) to get distance in KM
+         * Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
+         */
+        $query->whereRaw('
+            (
+                ACOS(
+                    COS(RADIANS(?)) * COS(RADIANS(event_venues.lat)) *
+                    COS(RADIANS(event_venues.lng) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(event_venues.lat))
+                ) * 6371 * 0.621371
+            ) <= ?
+        ', [$lat, $lng, $lat, $withinMiles]
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include active events.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('events.status_id', EventStatus::ACTIVE);
+    }
+
+    /**
+     * Scope a query to only include upcoming events.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUpcoming($query)
+    {
+        return $query->whereDate('events.start_at', '>=', date('Y-m-d'));
+    }
+
+    /**
+     * Scope a query to only include events matching search term.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  string $text
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFullTextSearch($query, $text)
+    {
+        $query->select('events.*');
+
+        if (!$this->isJoined($query, 'event_types')) {
+            $query->join('event_types', 'events.type_id', '=', 'event_types.id');
+        }
+
+        if (!$this->isJoined($query, 'event_venues')) {
+            $query->join('event_venues', 'events.venue_id', '=', 'event_venues.id');
+        }
+
+        $query->where(function ($query) use ($text) {
+            $query
+                ->where('events.title', 'LIKE', '%' . $text . '%')
+                ->orWhere('events.description', 'LIKE', '%' . $text . '%')
+                ->orWhere('event_venues.name', 'LIKE', '%' . $text . '%')
+                ->orWhere('event_venues.address', 'LIKE', '%' . $text . '%')
+                ->orWhere('event_types.name', 'LIKE', '%' . $text . '%');
+        });
+
+        return $query;
+    }
+
+    /**
+     * Find all events by a given user id.
      *
      * @param int $id
      * @return Event[]
@@ -169,54 +257,26 @@ class Event extends Model
     }
 
     /**
-     * Find all events by the given criteria.
+     * Check if a table is already joined in query builder.
      *
-     * @param  array $criteria [description]
-     * @return Event[]
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  string $table
+     * @return bool
      */
-    public static function createSearchQuery(array $criteria = [])
+    private function isJoined($query, $table)
     {
-        $query = Event::query()
-                        ->select('events.*')
-                        ->orderBy('events.start_at', 'ASC')
-                        ->where('events.status_id', EventStatus::ACTIVE)
-                        ->whereDate('events.start_at', '>=', date('Y-m-d'));
+        $joins = $query->getQuery()->joins;
 
-        if (!empty($criteria['q'])) {
-            $query
-                ->join('event_types', 'events.type_id', '=', 'event_types.id')
-                ->join('event_venues', 'events.venue_id', '=', 'event_venues.id')
-                ->where(function ($query) use ($criteria) {
-                    $query
-                        ->where('events.title', 'LIKE', '%' . $criteria['q'] . '%')
-                        ->orWhere('events.description', 'LIKE', '%' . $criteria['q'] . '%')
-                        ->orWhere('event_types.name', 'LIKE', '%' . $criteria['q'] . '%')
-                        ->orWhere('event_venues.name', 'LIKE', '%' . $criteria['q'] . '%');
-                });
+        if (!$joins) {
+            return false;
         }
 
-        if (!(empty($criteria['near']['lat']) && empty($criteria['near']['lng']) && empty($criteria['near']['within_miles']))) {
-
-            if (!empty($criteria['q'])) {
-                $query->join('event_venues', 'events.venue_id', '=', 'event_venues.id');
+        foreach ($joins as $join) {
+            if ($table == $join->table) {
+                return true;
             }
-
-            /**
-             * Multiply by 6371 (earth's radius in KM) to get distance in KM
-             * Then, multiply by 0.621371 to convert KM to miles (1 KM = 0.621371 miles)
-             */
-            $query->selectRaw('
-                (
-                    ACOS(
-                        COS(RADIANS(?)) * COS(RADIANS(event_venues.lat)) *
-                        COS(RADIANS(event_venues.lng) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(event_venues.lat))
-                    ) * 6371 * 0.621371
-                ) AS distance
-            ', [$criteria['near']['lat'], $criteria['near']['lng'], $criteria['near']['lat']]
-            )
-            ->having('distance', '<=', $criteria['near']['within_miles']);
         }
 
-        return $query;
+        return false;
     }
 }

@@ -58,8 +58,8 @@ class StoreEventFormRequest extends FormRequest
     public function response(array $errors)
     {
         // Check if venue name was provided but latitude or longitude is missing
-        if (!array_key_exists('venue.name', $errors) &&
-            (array_key_exists('venue.lat', $errors) || array_key_exists('venue.lng', $errors))
+        if (empty($errors['venue.name']) &&
+            (!empty($errors['venue.lat']) || !empty($errors['venue.lng']))
         ) {
                 $errors['venue.name'] = 'We didn\'t understand the location, please select from suggestions that appear when typing.';
         }

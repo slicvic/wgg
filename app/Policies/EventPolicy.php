@@ -9,7 +9,7 @@ use App\Models\Event;
 class EventPolicy
 {
     /**
-     * Determine if the given user can create events.
+     * Determine if a given user can create events.
      *
      * @param User $user
      * @return bool
@@ -20,7 +20,7 @@ class EventPolicy
     }
 
     /**
-     * Determine if the given event can be updated by the user.
+     * Determine if a given event can be updated by the user.
      *
      * @param User $user
      * @param Event $event
@@ -44,7 +44,7 @@ class EventPolicy
     }
 
     /**
-     * Determine if the given event can be rescheduled by the user.
+     * Determine if a given event can be rescheduled by the user.
      *
      * @param User $user
      * @param Event $event

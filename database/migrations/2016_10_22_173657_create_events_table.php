@@ -22,11 +22,12 @@ class CreateEventsTable extends Migration
             $table->string('title', 100);
             $table->string('description', 255);
             $table->timestamp('start_at')->nullable();
-
             //$table->date('start_date')->nullable();
             //$table->time('start_time')->nullable();
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index(['title', 'description']);
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('type_id')->references('id')->on('event_types');

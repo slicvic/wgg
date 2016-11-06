@@ -43,6 +43,6 @@ class UserPresenter extends BasePresenter
      */
     public function joinDate()
     {
-        return date('F j, Y', strtotime($this->model->created_at));
+        return date('F Y', strtotime($this->model->created_at));
     }
 }

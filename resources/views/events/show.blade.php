@@ -10,7 +10,7 @@
                         <h1 class="card-title display-4">
                             {{ $event->present()->title() }}
                             @if ($event->isCanceled()){!! $event->present()->status(true) !!}@endif
-                            @if ($event->isOrganizer(Auth::user()))
+                            @if (Auth::user() && $event->isOrganizer(Auth::user()))
                                 <a href="{{ route('events.edit', ['id' => $event->id]) }}" class="btn btn-link"><i class="fa fa-pencil"></i> Edit</a>
                             @endif
                         </h1>
@@ -23,8 +23,8 @@
                                     <i class="fa fa-clock-o"></i>
                                 </div>
                                 <div class="media-body">
-                                    <div>{{ $event->present()->when('long') }}</div>
-                                    <div class="text-warning">{{ $event->present()->when('diff') }}</div>
+                                    <div>{{ $event->present()->date('long') }}</div>
+                                    <div class="text-warning">{{ $event->present()->time() }}</div>
                                 </div>
                             </div>
                         </li>

@@ -63,7 +63,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Find a user with the given social account id and social account type id.
+     * Find a user with a given social account id and social account type id.
      *
      * @param  string $socialAccountId
      * @param  int $socialAccountTypeId

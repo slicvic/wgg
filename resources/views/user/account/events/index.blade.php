@@ -25,7 +25,7 @@
                         <td>{{ $event->type->label }}</td>
                         <td>{!! $event->present()->status(true) !!}</td>
                         <td>{{ $event->venue->name }}</td>
-                        <td>{{ $event->present()->when('long') }} <span class="text-warning">({{ $event->present()->when('diff') }})</span></td>
+                        <td>{{ $event->present()->date('long') }} <br> {{ $event->present()->time() }}</td>
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

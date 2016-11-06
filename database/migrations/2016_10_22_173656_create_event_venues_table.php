@@ -23,6 +23,8 @@ class CreateEventVenuesTable extends Migration
             $table->timestamps();
         });
 
+        $table->index(['name', 'address']);
+        
         //DB::statement('ALTER TABLE event_venues ADD COLUMN latlng POINT AFTER address');
     }
 

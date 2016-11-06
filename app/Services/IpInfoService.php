@@ -18,7 +18,7 @@ class IpInfoService implements GeoIpServiceInterface
     const API_URL = 'http://ipinfo.io';
 
     /**
-     * Get the geolocation information for the given IP.
+     * Get the geolocation information for a given IP.
      *
      * @param  string $ip
      * @return array

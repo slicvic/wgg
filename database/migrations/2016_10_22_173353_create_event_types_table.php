@@ -19,6 +19,8 @@ class CreateEventTypesTable extends Migration
             $table->string('label', 100);
             $table->timestamps();
         });
+
+        $table->index(['name']);
     }
 
     /**
