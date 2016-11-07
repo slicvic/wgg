@@ -1,9 +1,10 @@
 <div class="card">
     <div class="card-block">
-        <h4 class="card-title">{{ $event->present()->title() }} {{ $event->id }}</h4>
+        <h5 class="card-title">{{ $event->present()->title() }} {{ $event->id }}</h5>
         <p class="card-text">
-            {{ $event->present()->date('short') }}<br>
-            <span class="text-warning">{{ $event->present()->time() }}</span>
+            <span class="text-muted">{{ $event->present()->date('short') }}</span> <br>
+            {{ $event->present()->time() }} <br>
+            {{ $event->venue->name }}
         </p>
         <a href="{{ route('events.show', ['id' => $event->id])}}" class="btn btn-primary">Details</a>
     </div>

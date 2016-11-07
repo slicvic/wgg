@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class HomeController extends BaseController
     {
         $this->geoIpService = $geoIpService;
     }
+
     /**
      * Show the home page.
      *
@@ -30,23 +32,24 @@ class HomeController extends BaseController
      */
     public function index(Request $request)
     {
-        $ip = '73.85.49.134';//$request->ip();
+        $ip = $request->ip();
+        $ip = '73.85.49.134';
         $geolocation = $this->geoIpService->getGeolocationByIp($ip);
+        $input = [
+            'keywords' => '',
+            'radius' => 25,
+            'lat' => $geolocation['lat'],
+            'lng' => $geolocation['lng'],
+            'city' => $geolocation['city']
+        ];
 
-        $events = Event::nearby($geolocation['lat'], $geolocation['lng'], 10)
-            //->fullTextSearch('')
-            ->active()
-            ->upcoming()
+        $events = Event::filterNearby($input['lat'], $input['lng'], $input['radius'])
+            ->filterActive()
+            ->filterUpcoming()
+            ->limit(5)
+            ->orderByClosestStart()
             ->get();
 
-
-//        ->orderBy('start_at', 'ASC')
-//        ->where('status_id', EventStatus::ACTIVE)
-//        ->whereDate('start_at', '>=', date('Y-m-d'))
-    //    ->whereDate('events.start_at', '>=', date('Y-m-d'))
-
-    //    ->get();
-
-        return view('home.index', compact('geolocation', 'events'));
+        return view('home.index', compact('events', 'input'));
     }
 }

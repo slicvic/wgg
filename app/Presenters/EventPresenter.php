@@ -25,11 +25,10 @@ class EventPresenter extends BasePresenter
      */
     public function date($type = 'long')
     {
-        /*$now = \Carbon\Carbon::createFromTimeStamp(strtotime(\Carbon\Carbon::now('America/New_York')));
-        $start = \Carbon\Carbon::createFromTimeStamp(strtotime($this->model->start_at));
-        $diffForHumans =  $start->diffForHumans($now);
-        $diffForHumans = str_replace(['before', 'after'], ['ago', 'from now'], $diffForHumans);
-        return $diffForHumans;*/
+        // $now = \Carbon\Carbon::createFromTimeStamp(strtotime(\Carbon\Carbon::now('America/New_York')));
+        // $start = \Carbon\Carbon::createFromTimeStamp(strtotime($this->model->start_at));
+        // $diffForHumans =  $start->diffForHumans($now);
+        // $diffForHumans = str_replace(['before', 'after'], ['ago', 'from now'], $diffForHumans);
         $timestamp = strtotime($this->model->start_at);
         $carbon = Carbon::createFromTimeStamp($timestamp);
         $date = date('l, F j, Y', $timestamp);

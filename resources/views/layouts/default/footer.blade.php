@@ -23,11 +23,10 @@
             user: {
                 account: {
                     events: '{{ route('user.account.events.index') }}'
-                }    
+                }
             },
             events: {
-                create: '{{ route('events.create') }}',
-                search: '{{ route('events.search') }}'
+                create: '{{ route('events.create') }}'
             }
         },
         facebook: {

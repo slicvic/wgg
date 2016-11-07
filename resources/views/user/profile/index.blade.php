@@ -43,7 +43,7 @@
                         <br>
                         <div class="list-group">
                             @forelse (array_merge($events['upcoming'], $events['canceled']) as $event)
-                                @include('user.profile.partials.event-list-group-item', compact('event'))
+                                @include('partials.events.list-group-item', compact('event'))
                             @empty
                                 No upcoming games.
                             @endforelse
@@ -53,7 +53,7 @@
                         <br>
                         <div class="list-group">
                             @forelse ($events['past'] as $event)
-                                @include('user.profile.partials.event-list-group-item', compact('event'))
+                                @include('partials.events.list-group-item', compact('event'))
                             @empty
                                 No past games.
                             @endforelse

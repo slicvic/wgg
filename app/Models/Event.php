@@ -139,7 +139,7 @@ class Event extends Model
     }
 
     /**
-     * Scope a query to only include events with the given criteria.
+     * Scope a query to only include events nearby.
      *
      * @param  \Illuminate\Database\Eloquent\Builder $query
      * @param  double $lat
@@ -147,7 +147,7 @@ class Event extends Model
      * @param  int $withinMiles
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeNearby($query, $lat, $lng, $withinMiles = 50)
+    public function scopeFilterNearby($query, $lat, $lng, $withinMiles = 50)
     {
         $query->select('events.*');
 
@@ -178,9 +178,20 @@ class Event extends Model
      * @param  \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query)
+    public function scopeFilterActive($query)
     {
         return $query->where('events.status_id', EventStatus::ACTIVE);
+    }
+
+    /**
+     * Scope a query to only include events of given types.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilterTypes($query, array $typeIds)
+    {
+        return $query->whereIn('events.type_id', $typeIds);
     }
 
     /**
@@ -189,7 +200,7 @@ class Event extends Model
      * @param  \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeUpcoming($query)
+    public function scopeFilterUpcoming($query)
     {
         return $query->whereDate('events.start_at', '>=', date('Y-m-d'));
     }
@@ -201,7 +212,7 @@ class Event extends Model
      * @param  string $text
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeFullTextSearch($query, $text)
+    public function scopeFilterKeywords($query, $keywords)
     {
         $query->select('events.*');
 
@@ -213,16 +224,27 @@ class Event extends Model
             $query->join('event_venues', 'events.venue_id', '=', 'event_venues.id');
         }
 
-        $query->where(function ($query) use ($text) {
+        $query->where(function ($query) use ($keywords) {
             $query
-                ->where('events.title', 'LIKE', '%' . $text . '%')
-                ->orWhere('events.description', 'LIKE', '%' . $text . '%')
-                ->orWhere('event_venues.name', 'LIKE', '%' . $text . '%')
-                ->orWhere('event_venues.address', 'LIKE', '%' . $text . '%')
-                ->orWhere('event_types.name', 'LIKE', '%' . $text . '%');
+                ->where('events.title', 'LIKE', '%' . $keywords . '%')
+                ->orWhere('events.description', 'LIKE', '%' . $keywords . '%')
+                ->orWhere('event_venues.name', 'LIKE', '%' . $keywords . '%')
+                ->orWhere('event_venues.address', 'LIKE', '%' . $keywords . '%')
+                ->orWhere('event_types.name', 'LIKE', '%' . $keywords . '%');
         });
 
         return $query;
+    }
+
+    /**
+     * Scope a query to order by the closest start datetime.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOrderByClosestStart($query)
+    {
+        return $query->orderBy('events.start_at', 'ASC');
     }
 
     /**

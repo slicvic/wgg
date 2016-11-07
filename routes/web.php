@@ -34,8 +34,10 @@ Route::post('/events/{id}', 'EventsController@postEdit')->name('events.postEdit'
 Route::get('/events/{id}/reschedule', 'EventsController@reschedule')->name('events.reschedule')->where('id', '[0-9]+');
 Route::post('/events/{id}/reschedule', 'EventsController@postReschedule')->name('events.postReschedule')->where('id', '[0-9]+');
 Route::get('/events/{id}/cancel', 'EventsController@cancel')->name('events.cancel')->where('id', '[0-9]+');
-Route::get('/events/search', 'EventsController@search')->name('events.search');
 Route::get('/events/{id}', 'EventsController@show')->name('events.show')->where('id', '[0-9]+');
+
+// Search
+Route::get('/search/events', 'SearchController@events')->name('search.events');
 
 // Home
 Route::get('/', 'HomeController@index')->name('home');

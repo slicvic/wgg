@@ -1,5 +1,5 @@
 body {
-    padding-top: 65px;
+    padding-top: 70px;
 }
 
 body.home {
@@ -43,6 +43,10 @@ h1 small {
 
 .events-inline-search-form .twitter-typeahead input[type="text"] {
     vertical-align: middle!important;
+}
+
+.home-page .upcoming-events .card {
+    height: inherit;
 }
 
 /** Parsley Validation Overrides **/
