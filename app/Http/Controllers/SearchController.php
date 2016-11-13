@@ -35,6 +35,7 @@ class SearchController extends BaseController
         $ip = '73.85.49.134';
         $geolocation = $this->geoIpService->getGeolocationByIp($ip);
         $perPage = 4;
+        $defaultRadius = 25;
         $input = $request->only([
             'keywords',
             'radius',
@@ -43,6 +44,8 @@ class SearchController extends BaseController
             'city',
             'type'
         ]);
+
+        $input['radius'] = $input['radius'] ?: $defaultRadius;
 
         if (!$input['city']) {
             $input['lat'] = $geolocation['lat'];
@@ -53,7 +56,7 @@ class SearchController extends BaseController
         $events = Event::query()
             ->filterActive()
             ->filterUpcoming()
-            ->orderByClosestStart();
+            ->orderBySoonest();
 
         if ($input['keywords']) {
             $events->filterKeywords($input['keywords']);

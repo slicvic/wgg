@@ -47,7 +47,7 @@ class HomeController extends BaseController
             ->filterActive()
             ->filterUpcoming()
             ->limit(5)
-            ->orderByClosestStart()
+            ->orderBySoonest()
             ->get();
 
         return view('home.index', compact('events', 'input'));

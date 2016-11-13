@@ -242,7 +242,7 @@ class Event extends Model
      * @param  \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOrderByClosestStart($query)
+    public function scopeOrderBySoonest($query)
     {
         return $query->orderBy('events.start_at', 'ASC');
     }

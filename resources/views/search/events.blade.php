@@ -7,7 +7,7 @@
                 <div class="card">
                     <h3 class="card-header">Find</h3>
                     <div class="card-block">
-                        @include('partials.events.form-search', compact('input'))
+                        @include('partials.events.form-search-v2', compact('input'))
                     </div>
                 </div>
             </div>
