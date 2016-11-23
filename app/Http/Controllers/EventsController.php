@@ -41,8 +41,9 @@ class EventsController extends BaseController
     public function create(Request $request)
     {
         $event = new Event;
+        $postRoute = route('events.postCreate');
 
-        return view('events.create', compact('event'));
+        return view('events.create', compact('event', 'postRoute'));
     }
 
     /**
@@ -84,11 +85,12 @@ class EventsController extends BaseController
     public function edit(Request $request, $id)
     {
         $event = Event::findOrFail($id);
+        $postRoute = route('events.postEdit', ['id' => $event->id]);
 
         // Check if the user is allowed to edit this event
         $this->authorize('update', $event);
 
-        return view('events.edit', compact('event'));
+        return view('events.edit', compact('event', 'postRoute'));
     }
 
     /**
@@ -134,11 +136,12 @@ class EventsController extends BaseController
     public function reschedule(Request $request, $id)
     {
         $event = Event::findOrFail($id);
+        $postRoute = route('events.postReschedule', ['id' => $event->id]);
 
         // Check if the user is allowed to reschedule this event
         $this->authorize('reschedule', $event);
 
-        return view('events.create', compact('event'));
+        return view('events.create', compact('event', 'postRoute'));
     }
 
     /**
