@@ -73,6 +73,6 @@ class SearchController extends BaseController
         $events = $events->paginate($perPage);
         $events->appends($input);
 
-        return view('search.events', compact('events', 'input'));
+        return view('search.events.result', compact('events', 'input'));
     }
 }
