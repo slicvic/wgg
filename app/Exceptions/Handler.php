@@ -79,7 +79,7 @@ class Handler extends ExceptionHandler
         $data = [
             'error' => [
                 'status' => '',
-                'message_format' => 'text',
+                'message_format' => 'plain/text',
                 'message' => ''
             ]
         ];

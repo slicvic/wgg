@@ -8,5 +8,5 @@
     </ol>
     <h1 class="display-4">Create a game</h1>
     <hr>
-    @include('partials.events.form-create-edit', ['event' => $event])
+    @include('partials.events.form', ['event' => $event])
 @endsection

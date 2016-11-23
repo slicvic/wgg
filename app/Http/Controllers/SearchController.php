@@ -35,17 +35,17 @@ class SearchController extends BaseController
         $ip = '73.85.49.134';
         $geolocation = $this->geoIpService->getGeolocationByIp($ip);
         $perPage = 4;
-        $defaultRadius = 25;
+        $defaultDistance = 25;
         $input = $request->only([
-            'keywords',
-            'radius',
+            'keyword',
+            'distance',
             'lat',
             'lng',
             'city',
             'type'
         ]);
 
-        $input['radius'] = $input['radius'] ?: $defaultRadius;
+        $input['distance'] = $input['distance'] ?: $defaultDistance;
 
         if (!$input['city']) {
             $input['lat'] = $geolocation['lat'];
@@ -58,12 +58,12 @@ class SearchController extends BaseController
             ->filterUpcoming()
             ->orderBySoonest();
 
-        if ($input['keywords']) {
-            $events->filterKeywords($input['keywords']);
+        if ($input['keyword']) {
+            $events->filterKeyword($input['keyword']);
         }
 
-        if ($input['radius']) {
-            $events->filterNearby($input['lat'], $input['lng'], $input['radius']);
+        if ($input['distance'] && is_numeric($input['distance'])) {
+            $events->filterNearby($input['lat'], $input['lng'], $input['distance']);
         }
 
         if ($input['type']) {

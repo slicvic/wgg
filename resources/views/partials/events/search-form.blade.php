@@ -1,15 +1,15 @@
 <form class="" method="get" action="{{ route('search.events') }}">
     <div class="form-group">
         <input type="text" class="form-control form-control-lg"
-            name="keywords"
+            name="keyword"
             size="25"
-            value="{{ $input['keywords'] or '' }}"
+            value="{{ $input['keyword'] or '' }}"
             placeholder="All Games">
     </div>
     <div class="form-group">
         <label>Distance</label>
-        <select class="form-control form-control-lg" name="radius">
-            @include('partials.events.radius-select-options', ['selectedValue' => $input['radius']])
+        <select class="form-control form-control-lg" name="distance">
+            @include('partials.events.distance-select-options', ['selectedValue' => $input['distance']])
         </select>
     </div>
     <div class="form-group">
@@ -33,7 +33,7 @@
                         type="checkbox"
                         name="type[]"
                         value="{{ $eventType->id }}"
-                        {{ ($input['type'] && in_array($eventType->id, $input['type'])) ? ' checked' : '' }}> 
+                        {{ ($input['type'] && in_array($eventType->id, $input['type'])) ? ' checked' : '' }}>
                         {{ $eventType->label }}
                 </label>
             </div>

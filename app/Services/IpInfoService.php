@@ -25,12 +25,6 @@ class IpInfoService implements GeoIpServiceInterface
      */
     public function getGeolocationByIp($ip)
     {
-        $result = [
-            'city' => null,
-            'lat' => null,
-            'lng' => null
-        ];
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::API_URL . '/' . $ip . '/json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -38,6 +32,12 @@ class IpInfoService implements GeoIpServiceInterface
         $headers = curl_getinfo($ch);
         curl_close($ch);
         $decodedBody = json_decode($body, true);
+
+        $result = [
+            'city' => null,
+            'lat' => null,
+            'lng' => null
+        ];
 
         if (!(empty($decodedBody['loc']) && empty($decodedBody['city']) && empty($decodedBody['region']) && empty($decodedBody['country']))) {
             list($result['lat'], $result['lng']) = explode(',', $decodedBody['loc']);

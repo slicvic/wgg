@@ -1,16 +1,16 @@
 <?php
     switch (Route::currentRouteName()) {
         case 'events.edit':
-            $formAction = route('events.postEdit', ['id' => $event->id]);
+            $action = route('events.postEdit', ['id' => $event->id]);
             break;
         case 'events.reschedule':
-            $formAction = route('events.postReschedule', ['id' => $event->id]);
+            $action = route('events.postReschedule', ['id' => $event->id]);
             break;
         default:
-            $formAction = route('events.postCreate');
+            $action = route('events.postCreate');
     }
- ?>
-<form action="{{ $formAction }}" method="post" id="events--create-edit-form" class="js-validate-form">
+?>
+<form action="{{ $action }}" method="post" id="events--create-edit-form" class="js-validate-form">
     <div v-html="errors"></div>
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group row">

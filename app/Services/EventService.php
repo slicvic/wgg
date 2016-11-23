@@ -19,9 +19,9 @@ class EventService implements EventServiceInterface
      */
     public function create(array $data)
     {
-        DB::beginTransaction();
-
         try {
+            DB::beginTransaction();
+
             // Create venue
             $venue = EventVenue::create([
                 'name' => $data['venue']['name'],
@@ -43,6 +43,7 @@ class EventService implements EventServiceInterface
             ]);
 
             DB::commit();
+
             return $event;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -59,9 +60,9 @@ class EventService implements EventServiceInterface
      */
     public function update(Event $event, array $data)
     {
-        DB::beginTransaction();
-
         try {
+            DB::beginTransaction();
+
             // Update venue
             if (is_array($data['venue']) && count($data['venue'])) {
                 $event->venue->update($data['venue']);
@@ -89,9 +90,9 @@ class EventService implements EventServiceInterface
      */
     public function reschedule(Event $oldEvent, array $data)
     {
-        DB::beginTransaction();
-
         try {
+            DB::beginTransaction();
+
             // Recreate venue
             $newVenue = $oldEvent->venue->replicate();
             if (is_array($data['venue']) && count($data['venue'])) {

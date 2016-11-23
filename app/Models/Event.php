@@ -212,7 +212,7 @@ class Event extends Model
      * @param  string $text
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeFilterKeywords($query, $keywords)
+    public function scopeFilterKeyword($query, $keyword)
     {
         $query->select('events.*');
 
@@ -224,13 +224,13 @@ class Event extends Model
             $query->join('event_venues', 'events.venue_id', '=', 'event_venues.id');
         }
 
-        $query->where(function ($query) use ($keywords) {
+        $query->where(function ($query) use ($keyword) {
             $query
-                ->where('events.title', 'LIKE', '%' . $keywords . '%')
-                ->orWhere('events.description', 'LIKE', '%' . $keywords . '%')
-                ->orWhere('event_venues.name', 'LIKE', '%' . $keywords . '%')
-                ->orWhere('event_venues.address', 'LIKE', '%' . $keywords . '%')
-                ->orWhere('event_types.name', 'LIKE', '%' . $keywords . '%');
+                ->where('events.title', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('events.description', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('event_venues.name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('event_venues.address', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('event_types.name', 'LIKE', '%' . $keyword . '%');
         });
 
         return $query;

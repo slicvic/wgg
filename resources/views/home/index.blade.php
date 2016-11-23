@@ -6,7 +6,7 @@
         <h1 class="display-4">Who's Got Game!</h1>
         <p class="lead">Find and organize pickup games.</p>
         <hr>
-        @include('partials.events.form-search-v1', ['input' => $input])
+        @include('partials.events.search-form-inline', ['input' => $input])
     </div>
 
     <div class="container">

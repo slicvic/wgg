@@ -27,7 +27,7 @@
         @include('layouts.default.header')
 
         <div id="content" class="container">
-            @include('flash-message')
+            @include('partials.flash-message')
             @yield('content')
         </div>
 
