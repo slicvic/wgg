@@ -32,6 +32,8 @@ class HomeController extends BaseController
      */
     public function index(Request $request)
     {
+        echo '<pre>';
+        print_r($_SERVER);EXIT;
         $ip = $request->ip();
         $ip = '73.85.49.134';
         $geolocation = $this->geoIpService->getGeolocationByIp($ip);
