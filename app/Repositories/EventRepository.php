@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
-use App\Contracts\RepositoryInterface;
 use App\Models\Event;
 use App\Models\EventVenue;
 use App\Models\EventStatus;
