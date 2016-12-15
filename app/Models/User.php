@@ -63,13 +63,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Find a user with a given social account id and social account type id.
+     * Find a specific user by the social account id and social account type id.
      *
      * @param  string $socialAccountId
      * @param  int $socialAccountTypeId
      * @return User|null
      */
-    public static function findOneBySocialAccountIdAndSocialAccountTypeId($socialAccountId, $socialAccountTypeId)
+    public static function findBySocialAccountIdAndTypeId($socialAccountId, $socialAccountTypeId)
     {
         return static::where('social_account_id', $socialAccountId)
                     ->where('social_account_type_id', $socialAccountTypeId)

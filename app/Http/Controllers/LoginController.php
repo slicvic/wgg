@@ -6,24 +6,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-use App\Contracts\RegistrarServiceInterface;
+use App\Contracts\SocialLoginInterface;
 use App\Exceptions\AccountDeactivatedException;
 
 class LoginController extends BaseController
 {
     /**
-     * @var RegistrarService
+     * @var SocialLoginInterface
      */
-    protected $registrarService;
+    protected $socialLoginService;
 
     /**
      * Constructor.
      *
-     * @param RegistrarServiceInterface $registrarService
+     * @param SocialLoginInterface $socialLoginService
      */
-    public function __construct(RegistrarServiceInterface $registrarService)
+    public function __construct(SocialLoginInterface $socialLoginService)
     {
-        $this->registrarService = $registrarService;
+        $this->socialLoginService = $socialLoginService;
     }
 
     /**
@@ -39,7 +39,7 @@ class LoginController extends BaseController
     }
 
     /**
-     * Log in a Facebook user.
+     * Log in a facebook user.
      *
      * @param  Request $request
      * @return \Illuminate\Routing\Redirector
@@ -47,10 +47,8 @@ class LoginController extends BaseController
     public function facebook(Request $request)
     {
         try {
-            // Create new user or update existing
-            $user = $this->registrarService->facebook();
+            $user = $this->socialLoginService->registerWithFacebook();
 
-            // Log the user in
             Auth::loginUsingId($user->id);
 
             if ($redirectUrl = $request->query('redirect')) {
