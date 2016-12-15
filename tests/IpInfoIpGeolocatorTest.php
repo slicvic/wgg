@@ -23,62 +23,55 @@ class IpInfoIpGeolocatorTest extends TestCase
     public function ipToGeolocationDataProvider()
     {
         return [
-            // Google primary DNS server
-            [
-                '8.8.8.8', [
+            'Test 1 location not found' => ['127.0.0.1', null],
+            'Test 2 location not found' => ['some bogus string', null],
+            'Test 3 location not found' => ['', null],
+            'Test 4 location not found' => ['1000', null],
+            'Test 5 location not found' => ['600.700.800.900', null],
+            'Test 6 location found' => [
+                gethostbyname('google.com'),
+                [
                     'city' => 'Mountain View, California',
-                    'lat' => '37.3860',
-                    'lng' => '-122.0838'
+                    'lat' => '37.4192',
+                    'lng' => '-122.0574'
                 ]
             ],
-            // SmartViper primary DNS server
-            [
-                '208.76.50.50',
+            'Test 7 location found' => [
+                gethostbyname('yahoo.com'),
                 [
-                    'city' => 'Clearwater Beach, Florida',
-                    'lat' => '27.9772',
-                    'lng' => '-82.8279'
+                    'city' => 'Sunnyvale, California',
+                    'lat' => '37.4249',
+                    'lng' => '-122.0074'
                 ]
             ],
-            // Yandex.DNS primary DNS server
-            [
-                '77.88.8.8',
+            'Test 8 location found' => [
+                gethostbyname('bing.com'),
                 [
-                    'city' => 'Saint Petersburg, St.-Petersburg',
-                    'lat' => '59.8944',
-                    'lng' => '30.2642'
+                    'city' => 'Redmond, Washington',
+                    'lat' => '47.6801',
+                    'lng' => '-122.1206'
                 ]
             ]
         ];
     }
 
-    public function testIpToGeolocationDidNotFindLocation()
-    {
-        $ips = [
-            '127.0.0.1',
-            'some bogus string',
-            '',
-            '1000',
-            '600.700.800.900'
-        ];
-
-        foreach ($ips as $ip) {
-            $this->assertSame(null, $this->instance->ipToGeolocation($ip));
-        }
-    }
-
     /**
      * @dataProvider ipToGeolocationDataProvider
      */
-    public function testIpToGeolocationSuccess($ip, $expected)
+    public function testIpToGeolocation($ip, $expected)
     {
         $result = $this->instance->ipToGeolocation($ip);
-        $this->assertInternalType('array', $expected);
-        $this->assertArrayHasKey('city', $expected);
-        $this->assertArrayHasKey('lat', $expected);
-        $this->assertArrayHasKey('lng', $expected);
-        $this->assertEquals($expected['city'], $result['city']);
-        $this->assertEquals($expected['lat'], $result['lat']);
-        $this->assertEquals($expected['lng'], $result['lng']);
+
+        $this->assertSame(gettype($expected), gettype($result));
+
+        if (is_array($expected)) {
+            $this->assertInternalType('array', $result);
+            $this->assertArrayHasKey('city', $result);
+            $this->assertArrayHasKey('lat', $result);
+            $this->assertArrayHasKey('lng', $result);
+            $this->assertSame($expected['city'], $result['city']);
+            $this->assertSame($expected['lat'], $result['lat']);
+            $this->assertSame($expected['lng'], $result['lng']);
+        }
     }
 }
