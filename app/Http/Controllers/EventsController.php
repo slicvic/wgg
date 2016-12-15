@@ -6,30 +6,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreEventFormRequest;
-use App\Contracts\EventServiceInterface;
+use App\Repositories\EventRepository;
 use App\Models\Event;
 use App\Models\EventStatus;
 
 class EventsController extends BaseController
 {
     /**
-     * @var EventService
+     * @var EventRepository
      */
-    protected $eventService;
+    protected $eventRepository;
 
     /**
      * Constructor.
      *
-     * @param EventServiceInterface $eventService
+     * @param EventRepository $eventRepository
      */
-    public function __construct(EventServiceInterface $eventService)
+    public function __construct(EventRepository $eventRepository)
     {
         $this->middleware('auth')->except([
             'search',
             'show'
         ]);
 
-        $this->eventService = $eventService;
+        $this->eventRepository = $eventRepository;
     }
 
     /**
@@ -68,7 +68,7 @@ class EventsController extends BaseController
 
         $input['event']['user_id'] = Auth::user()->id;
 
-        $event = $this->eventService->create($input);
+        $event = $this->eventRepository->create($input);
 
         $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
 
@@ -119,7 +119,7 @@ class EventsController extends BaseController
             'venue.url'
         ]);
 
-        $this->eventService->update($event, $input);
+        $this->eventRepository->update($event, $input);
 
         $this->flashSuccess(trans('messages.event.updated', ['title' => $event->present()->title()]));
 
@@ -170,7 +170,7 @@ class EventsController extends BaseController
             'venue.url'
         ]);
 
-        $this->eventService->reschedule($event, $input);
+        $this->eventRepository->reschedule($event, $input);
 
         $this->flashSuccess(trans('messages.event.created', ['title' => $event->present()->title()]));
 
