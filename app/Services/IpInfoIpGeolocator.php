@@ -22,6 +22,10 @@ class IpInfoIpGeolocator implements IpGeolocatorInterface
      */
     public function ipToGeolocation(string $ip)
     {
+        if (empty($ip)) {
+            return null;
+        }
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::API_URL . '/' . $ip . '/json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -34,24 +38,19 @@ class IpInfoIpGeolocator implements IpGeolocatorInterface
             empty($decodedBody['loc'])
             || empty($decodedBody['city'])
             || empty($decodedBody['region'])
-            || empty($decodedBody['country'])
         ) {
             return null;
         }
 
-        $geolocation = [
-            'city' => '',
+        $result = [
+            'city' => sprintf('%s, %s', $decodedBody['city'], $decodedBody['region']),
             'lat' => '',
             'lng' => ''
+
         ];
 
-        list($geolocation['lat'], $geolocation['lng']) = explode(',', $decodedBody['loc']);
+        list($result['lat'], $result['lng']) = explode(',', $decodedBody['loc']);
 
-        $geolocation['city'] = sprintf('%s, %s',
-            $decodedBody['city'],
-            ('US' === $decodedBody['country']) ? $decodedBody['region'] : $decodedBody['country']
-        );
-
-        return $geolocation;
+        return $result;
     }
 }
