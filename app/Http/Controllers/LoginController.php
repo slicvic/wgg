@@ -6,24 +6,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-use App\Contracts\SocialLoginInterface;
 use App\Exceptions\AccountDeactivatedException;
+use App\Services\Socializer;
 
 class LoginController extends BaseController
 {
     /**
-     * @var SocialLoginInterface
+     * @var Socializer
      */
-    protected $socialLoginService;
+    protected $socializer;
 
     /**
      * Constructor.
      *
-     * @param SocialLoginInterface $socialLoginService
+     * @param Socializer $socializer
      */
-    public function __construct(SocialLoginInterface $socialLoginService)
+    public function __construct(Socializer $socializer)
     {
-        $this->socialLoginService = $socialLoginService;
+        $this->socializer = $socializer;
     }
 
     /**
@@ -47,7 +47,7 @@ class LoginController extends BaseController
     public function facebook(Request $request)
     {
         try {
-            $user = $this->socialLoginService->registerWithFacebook();
+            $user = $this->socializer->registerWithFacebook();
 
             Auth::loginUsingId($user->id);
 

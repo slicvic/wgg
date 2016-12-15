@@ -23,10 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('App\Contracts\SocialLoginInterface', function ($app) {
-            return new \App\Services\SocialLoginService();
-        });
-
         $this->app->singleton('App\Contracts\LocationFinderInterface', function ($app) {
             return new \App\Services\IpInfoLocationFinder();
         });

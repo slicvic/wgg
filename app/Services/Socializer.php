@@ -7,15 +7,23 @@ use Illuminate\Support\Facades\Auth;
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-use App\Contracts\SocialLoginInterface;
 use App\Exceptions\AccountDeactivatedException;
 use App\Models\User;
 use App\Models\SocialAccountType;
 
-class SocialLoginService implements SocialLoginInterface
+/**
+ * This service class is to assist with user registration and login through
+ * social media sites i.e. Facebook.
+ */
+class Socializer
 {
     /**
-     * {@inheritdoc}
+     * Create a user account for the authenticated Facebook user.
+     *
+     * @return \Models\User
+     * @throws \Facebook\Exceptions\FacebookSDKException
+     * @throws \Facebook\Exceptions\FacebookSDKException
+     * @throws \App\Exceptions\AccountDeactivatedException
      */
     public function registerWithFacebook()
     {
