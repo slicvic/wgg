@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Contracts\GeoIpServiceInterface;
+use App\Contracts\IpGeolocatorInterface;
 use App\Models\Event;
 
 class SearchController extends BaseController
 {
     /**
-     * @var GeoIpServiceInterface
+     * @var IpGeolocatorInterface
      */
-    protected $geoIpService;
+    protected $ipGeolocator;
 
     /**
      * Constructor.
      *
-     * @param GeoIpServiceInterface $geoIpService
+     * @param IpGeolocatorInterface $ipGeolocator
      */
-    public function __construct(GeoIpServiceInterface $geoIpService)
+    public function __construct(IpGeolocatorInterface $ipGeolocator)
     {
-        $this->geoIpService = $geoIpService;
+        $this->ipGeolocator = $ipGeolocator;
     }
 
     /**
@@ -33,7 +33,7 @@ class SearchController extends BaseController
     {
         $ip = $request->ip();
         $ip = '73.85.49.134';
-        $geolocation = $this->geoIpService->getGeolocationByIp($ip);
+        $geolocation = $this->ipGeolocator->ipToGeolocation($ip);
         $perPage = 4;
         $defaultDistance = 25;
         $input = $request->only([

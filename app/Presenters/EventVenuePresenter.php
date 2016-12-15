@@ -9,7 +9,7 @@ class EventVenuePresenter extends BasePresenter
      *
      * @return string
      */
-    public function staticMapImageUrl($width = 640, $height = 100)
+    public function staticMapImageUrl(int $width = 640, int $height = 100)
     {
         return implode('', [
             'https://maps.googleapis.com/maps/api/staticmap',

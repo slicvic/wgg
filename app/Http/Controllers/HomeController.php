@@ -4,24 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Facebook\Facebook;
-use App\Contracts\LocationFinderInterface;
+use App\Contracts\IpGeolocatorInterface;
 use App\Models\Event;
 
 class HomeController extends BaseController
 {
     /**
-     * @var LocationFinderInterface
+     * @var IpGeolocatorInterface
      */
-    protected $locationFinder;
+    protected $ipGeolocator;
 
     /**
      * Constructor.
      *
-     * @param LocationFinderInterface $locationFinder
+     * @param IpGeolocatorInterface $ipGeolocator
      */
-    public function __construct(LocationFinderInterface $locationFinder)
+    public function __construct(IpGeolocatorInterface $ipGeolocator)
     {
-        $this->locationFinder = $locationFinder;
+        $this->ipGeolocator = $ipGeolocator;
     }
 
     /**
@@ -34,7 +34,7 @@ class HomeController extends BaseController
     {
         $ip = $request->ip();
         $ip = '73.85.49.134';
-        $geolocation = $this->locationFinder->ipToGeolocation($ip);
+        $geolocation = $this->ipGeolocator->ipToGeolocation($ip);
         $input = [
             'keyword' => '',
             'distance' => 25,

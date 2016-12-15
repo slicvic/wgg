@@ -23,7 +23,7 @@ class EventPresenter extends BasePresenter
      * @param string $type short|medium|long
      * @return string
      */
-    public function date($type = 'long')
+    public function date(string $type = 'long')
     {
         // $now = \Carbon\Carbon::createFromTimeStamp(strtotime(\Carbon\Carbon::now('America/New_York')));
         // $start = \Carbon\Carbon::createFromTimeStamp(strtotime($this->model->start_at));
@@ -68,7 +68,7 @@ class EventPresenter extends BasePresenter
      * @param bool $asHtml
      * @return string
      */
-    public function status($asHtml = false)
+    public function status(bool $asHtml = false)
     {
         switch ($this->model->status->id) {
             case EventStatus::ACTIVE:

@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('App\Contracts\LocationFinderInterface', function ($app) {
-            return new \App\Services\IpInfoLocationFinder();
+        $this->app->singleton('App\Contracts\IpGeolocatorInterface', function ($app) {
+            return new \App\Services\IpInfoIpGeolocator();
         });
     }
 }

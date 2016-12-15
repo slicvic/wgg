@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\LocationFinderInterface;
+use App\Contracts\IpGeolocatorInterface;
 
 /**
  * This service class is a client for ipinfo.io IP lookup API.
@@ -10,7 +10,7 @@ use App\Contracts\LocationFinderInterface;
  * @author Victor Lantigua
  * @link https://ipinfo.io/developers For developer documentation
  */
-class IpInfoLocationFinder implements LocationFinderInterface
+class IpInfoIpGeolocator implements IpGeolocatorInterface
 {
     /**
      * The API URL.
@@ -20,7 +20,7 @@ class IpInfoLocationFinder implements LocationFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function ipToGeolocation($ip)
+    public function ipToGeolocation(string $ip)
     {
         $geolocation = [
             'city' => null,

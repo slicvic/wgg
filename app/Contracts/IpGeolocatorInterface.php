@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface LocationFinderInterface
+interface IpGeolocatorInterface
 {
     /**
      * Get the geolocation information for a given IP.
@@ -15,5 +15,5 @@ interface LocationFinderInterface
      *      'lng' => '123'
      *    ]
      */
-    public function ipToGeolocation($ip);
+    public function ipToGeolocation(string $ip);
 }

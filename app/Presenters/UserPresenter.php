@@ -13,7 +13,7 @@ class UserPresenter extends BasePresenter
      * @param  int $height
      * @return string
      */
-    public function profilePictureUrl($width = 30, $height = null)
+    public function profilePictureUrl(int $width = 30, int $height = null)
     {
         switch($this->model->social_account_type_id) {
             case SocialAccountType::FACEBOOK:
