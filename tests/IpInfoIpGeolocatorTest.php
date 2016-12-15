@@ -35,7 +35,7 @@ class IpInfoIpGeolocatorTest extends TestCase
         }
     }
 
-    public function testIpToGeolocationSuccessWithDomesticIp()
+    public function testIpToGeolocationSuccess()
     {
         // Google primary DNS server
         $ip = '8.8.8.8';
@@ -58,10 +58,7 @@ class IpInfoIpGeolocatorTest extends TestCase
         $this->assertEquals('Clearwater Beach, Florida', $result['city']);
         $this->assertEquals('27.9772', $result['lat']);
         $this->assertEquals('-82.8279', $result['lng']);
-    }
 
-    public function testIpToGeolocationSuccessWithInternationalIp()
-    {
         // Yandex.DNS primary DNS server
         $ip = '77.88.8.8';
         $result = $this->instance->ipToGeolocation($ip);
