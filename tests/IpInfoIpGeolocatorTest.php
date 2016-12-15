@@ -20,54 +20,69 @@ class IpInfoIpGeolocatorTest extends TestCase
         $this->instance = null;
     }
 
-    public function testIpToGeolocationCouldNotDetermineLocation()
+    public function ipToGeolocationInvalidDataProvider()
     {
-        $ips = [
-            '127.0.0.1',
-            'some bogus string',
-            '',
-            '1000',
-            '600.700.800.900'
+        return [
+            ['127.0.0.1', null],
+            ['some bogus string', null],
+            ['', null],
+            ['1000', null],
+            ['600.700.800.900', null]
         ];
-
-        foreach ($ips as $ip) {
-            $this->assertNull($this->instance->ipToGeolocation($ip));
-        }
     }
 
-    public function testIpToGeolocationSuccess()
+    public function ipToGeolocationValidDataProvider()
     {
-        // Google primary DNS server
-        $ip = '8.8.8.8';
-        $result = $this->instance->ipToGeolocation($ip);
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('city', $result);
-        $this->assertArrayHasKey('lat', $result);
-        $this->assertArrayHasKey('lng', $result);
-        $this->assertEquals('Mountain View, California', $result['city']);
-        $this->assertEquals('37.3860', $result['lat']);
-        $this->assertEquals('-122.0838', $result['lng']);
+        return [
+            // Google primary DNS server
+            [
+                '8.8.8.8', [
+                    'city' => 'Mountain View, California',
+                    'lat' => '37.3860',
+                    'lng' => '-122.0838'
+                ]
+            ],
+            // SmartViper primary DNS server
+            [
+                '208.76.50.50',
+                [
+                    'city' => 'Clearwater Beach, Florida',
+                    'lat' => '27.9772',
+                    'lng' => '-82.8279'
+                ]
+            ],
+            // Yandex.DNS primary DNS server
+            [
+                '77.88.8.8',
+                [
+                    'city' => 'Saint Petersburg, St.-Petersburg',
+                    'lat' => '59.8944',
+                    'lng' => '30.2642'
+                ]
+            ]
+        ];
+    }
 
-        // SmartViper primary DNS server
-        $ip = '208.76.50.50';
-        $result = $this->instance->ipToGeolocation($ip);
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('city', $result);
-        $this->assertArrayHasKey('lat', $result);
-        $this->assertArrayHasKey('lng', $result);
-        $this->assertEquals('Clearwater Beach, Florida', $result['city']);
-        $this->assertEquals('27.9772', $result['lat']);
-        $this->assertEquals('-82.8279', $result['lng']);
+    /**
+     * @dataProvider ipToGeolocationInvalidDataProvider
+     */
+    public function testIpToGeolocationFailToDetermineLocation($ip, $expected)
+    {
+        $this->assertSame($expected, $this->instance->ipToGeolocation($ip));
+    }
 
-        // Yandex.DNS primary DNS server
-        $ip = '77.88.8.8';
+    /**
+     * @dataProvider ipToGeolocationValidDataProvider
+     */
+    public function testIpToGeolocationSuccess($ip, $expected)
+    {
         $result = $this->instance->ipToGeolocation($ip);
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('city', $result);
-        $this->assertArrayHasKey('lat', $result);
-        $this->assertArrayHasKey('lng', $result);
-        $this->assertEquals('Saint Petersburg, St.-Petersburg', $result['city']);
-        $this->assertEquals('59.8944', $result['lat']);
-        $this->assertEquals('30.2642', $result['lng']);
+        $this->assertInternalType('array', $expected);
+        $this->assertArrayHasKey('city', $expected);
+        $this->assertArrayHasKey('lat', $expected);
+        $this->assertArrayHasKey('lng', $expected);
+        $this->assertEquals($expected['city'], $result['city']);
+        $this->assertEquals($expected['lat'], $result['lat']);
+        $this->assertEquals($expected['lng'], $result['lng']);
     }
 }
