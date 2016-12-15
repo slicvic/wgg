@@ -20,18 +20,7 @@ class IpInfoIpGeolocatorTest extends TestCase
         $this->instance = null;
     }
 
-    public function ipToGeolocationInvalidDataProvider()
-    {
-        return [
-            ['127.0.0.1', null],
-            ['some bogus string', null],
-            ['', null],
-            ['1000', null],
-            ['600.700.800.900', null]
-        ];
-    }
-
-    public function ipToGeolocationValidDataProvider()
+    public function ipToGeolocationDataProvider()
     {
         return [
             // Google primary DNS server
@@ -63,16 +52,23 @@ class IpInfoIpGeolocatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider ipToGeolocationInvalidDataProvider
-     */
-    public function testIpToGeolocationFailToDetermineLocation($ip, $expected)
+    public function testIpToGeolocationDidNotFindLocation()
     {
-        $this->assertSame($expected, $this->instance->ipToGeolocation($ip));
+        $ips = [
+            '127.0.0.1',
+            'some bogus string',
+            '',
+            '1000',
+            '600.700.800.900'
+        ];
+
+        foreach ($ips as $ip) {
+            $this->assertSame(null, $this->instance->ipToGeolocation($ip));
+        }
     }
 
     /**
-     * @dataProvider ipToGeolocationValidDataProvider
+     * @dataProvider ipToGeolocationDataProvider
      */
     public function testIpToGeolocationSuccess($ip, $expected)
     {
