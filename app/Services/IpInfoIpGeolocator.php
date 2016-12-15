@@ -22,12 +22,6 @@ class IpInfoIpGeolocator implements IpGeolocatorInterface
      */
     public function ipToGeolocation(string $ip)
     {
-        $geolocation = [
-            'city' => null,
-            'lat' => null,
-            'lng' => null
-        ];
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::API_URL . '/' . $ip . '/json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -36,11 +30,27 @@ class IpInfoIpGeolocator implements IpGeolocatorInterface
         curl_close($ch);
         $decodedBody = json_decode($body, true);
 
-        if (!(empty($decodedBody['loc']) && empty($decodedBody['city']) && empty($decodedBody['region']) && empty($decodedBody['country']))) {
-            list($geolocation['lat'], $geolocation['lng']) = explode(',', $decodedBody['loc']);
-            $geolocation['city'] = $decodedBody['city'] . ', ';
-            $geolocation['city'] .= ('US' === $decodedBody['country']) ? $decodedBody['region'] : $decodedBody['country'];
+        if (
+            empty($decodedBody['loc'])
+            || empty($decodedBody['city'])
+            || empty($decodedBody['region'])
+            || empty($decodedBody['country'])
+        ) {
+            return null;
         }
+
+        $geolocation = [
+            'city' => '',
+            'lat' => '',
+            'lng' => ''
+        ];
+
+        list($geolocation['lat'], $geolocation['lng']) = explode(',', $decodedBody['loc']);
+
+        $geolocation['city'] = sprintf('%s, %s',
+            $decodedBody['city'],
+            ('US' === $decodedBody['country']) ? $decodedBody['region'] : $decodedBody['country']
+        );
 
         return $geolocation;
     }

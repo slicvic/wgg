@@ -5,10 +5,10 @@ namespace App\Contracts;
 interface IpGeolocatorInterface
 {
     /**
-     * Get the geolocation information for a given IP.
+     * Get the geolocation information for a specific IP address.
      *
      * @param  string $ip
-     * @return array In the form of:
+     * @return null|array In the form of:
      *    [
      *      'city' => 'Miami, Florida',
      *      'lat' => '129',

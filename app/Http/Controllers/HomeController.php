@@ -34,14 +34,20 @@ class HomeController extends BaseController
     {
         $ip = $request->ip();
         $ip = '73.85.49.134';
-        $geolocation = $this->ipGeolocator->ipToGeolocation($ip);
+        
         $input = [
             'keyword' => '',
             'distance' => 25,
-            'lat' => $geolocation['lat'],
-            'lng' => $geolocation['lng'],
-            'city' => $geolocation['city']
+            'lat' => '',
+            'lng' => '',
+            'city' => ''
         ];
+
+        if ($geolocation = $this->ipGeolocator->ipToGeolocation($ip)) {
+            $input['city'] = $geolocation['city'];
+            $input['lat'] = $geolocation['lat'];
+            $input['lng'] = $geolocation['lng'];
+        }
 
         $events = Event::filterNearby($input['lat'], $input['lng'], $input['distance'])
             ->filterActive()

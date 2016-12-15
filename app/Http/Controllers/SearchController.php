@@ -47,7 +47,7 @@ class SearchController extends BaseController
 
         $input['distance'] = $input['distance'] ?: $defaultDistance;
 
-        if (!$input['city']) {
+        if (!$input['city'] && $geolocation) {
             $input['lat'] = $geolocation['lat'];
             $input['lng'] = $geolocation['lng'];
             $input['city'] = $geolocation['city'];
